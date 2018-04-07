@@ -5,10 +5,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 
-/**
- * Created by sarada on 3/13/2018.
- */
-
 public class SettingsActivity extends PreferenceActivity
 {
     @Override

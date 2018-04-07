@@ -1,4 +1,6 @@
-package com.example.sarada.moviereviews;
+package com.example.sarada.moviereviews.models;
+
+import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +10,7 @@ import java.util.List;
  * Created by sarada on 3/11/2018.
  */
 
-public class MovieApiResponse {
+public class MovieApiResponse implements android.os.Parcelable {
 
     @SerializedName("page")
     private int page;
@@ -59,4 +61,38 @@ public class MovieApiResponse {
         this.totalPages = totalPages;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.page);
+        dest.writeTypedList(this.results);
+        dest.writeInt(this.totalResults);
+        dest.writeInt(this.totalPages);
+    }
+
+    public MovieApiResponse() {
+    }
+
+    protected MovieApiResponse(Parcel in) {
+        this.page = in.readInt();
+        this.results = in.createTypedArrayList(MovieDetails.CREATOR);
+        this.totalResults = in.readInt();
+        this.totalPages = in.readInt();
+    }
+
+    public static final Creator<MovieApiResponse> CREATOR = new Creator<MovieApiResponse>() {
+        @Override
+        public MovieApiResponse createFromParcel(Parcel source) {
+            return new MovieApiResponse(source);
+        }
+
+        @Override
+        public MovieApiResponse[] newArray(int size) {
+            return new MovieApiResponse[size];
+        }
+    };
 }

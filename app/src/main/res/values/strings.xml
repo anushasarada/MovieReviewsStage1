@@ -10,5 +10,11 @@
     <string name="pref_sort_order_key">sortOrder</string>
     <string name="image_view">image</string>
     <string name="movie_details">Movie Details</string>
+    <string name="plot_synopsis">Synopsis</string>
+    <string name="favorite">Favorite Movies</string>
+    <string name="author">Author</string>
+    <string name="content">Content</string>
+    <string name="internet_movie">Didn\'t see any movies?\nTrying refreshing by swiping down\nor\ncheck your internet connection</string>
+    <string name="trailer">Trailers:</string>
 
 </resources>
