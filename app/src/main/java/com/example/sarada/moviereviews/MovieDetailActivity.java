@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.AppBarLayout.OnOffsetChangedListener;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.multidex.BuildConfig;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,20 +38,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
-    @BindView(R.id.movie_title) TextView nameOfMovie;
-    @BindView(R.id.plot_synopsis) TextView plotSynopsis;
-    @BindView(R.id.userrating) TextView userRating;
-    @BindView(R.id.releasedate) TextView releaseDate;
-    @BindView(R.id.thumbnail_image_header) ImageView imageView;
-    @BindView(R.id.recycler_view1) RecyclerView recyclerView;
+    TextView nameOfMovie;
+    TextView plotSynopsis;
+    TextView userRating;
+    TextView releaseDate;
+    ImageView imageView;
+    RecyclerView recyclerView;
     private int movie_id;
     private String thumbnail, movieName, synopsis, rate, dateFromDB;
     MovieDetails movieDetails;
@@ -59,6 +58,14 @@ public class MovieDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        nameOfMovie = findViewById(R.id.movie_title);
+        plotSynopsis = findViewById(R.id.plot_synopsis);
+        userRating = findViewById(R.id.userrating);
+        releaseDate = findViewById(R.id.releasedate);
+        imageView = findViewById(R.id.thumbnail_image_header);
+        recyclerView = findViewById(R.id.recycler_view1);
+
         MovieDetailActivity.this.setTitle("Movie Details:");
         Toolbar toolBar = findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
@@ -68,8 +75,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         FavoriteDbHelper dbHelper = new FavoriteDbHelper(this);
 
         initCollapsingToolbar();
-
-        ButterKnife.bind(this);
 
         Intent intentThatStartedThisActivity = getIntent();
         if(intentThatStartedThisActivity.hasExtra("movies"))
@@ -116,44 +121,38 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (Exists(movieName)){
             materialFavoriteButton.setFavorite(true);
             materialFavoriteButton.setOnFavoriteChangeListener(
-                    new MaterialFavoriteButton.OnFavoriteChangeListener() {
-                        @Override
-                        public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                            if (favorite == true) {
-                                saveFavorite();
-                                Snackbar.make(buttonView, "Added to Favorite",
-                                        Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                String stringId = Integer.toString(movie_id);
-                                Uri uri = FavoriteContract.FavoriteEntry.CONTENT_URI;
-                                uri = uri.buildUpon().appendPath(stringId).build();
-                                getContentResolver().delete(uri, null, null);
+                    (buttonView, favorite) -> {
+                        if (favorite) {
+                            saveFavorite();
+                            Snackbar.make(buttonView, "Added to Favorite",
+                                    Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            String stringId = Integer.toString(movie_id);
+                            Uri uri = FavoriteContract.FavoriteEntry.CONTENT_URI;
+                            uri = uri.buildUpon().appendPath(stringId).build();
+                            getContentResolver().delete(uri, null, null);
 
-                                Snackbar.make(buttonView, "Removed from Favorite",
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
+                            Snackbar.make(buttonView, "Removed from Favorite",
+                                    Snackbar.LENGTH_SHORT).show();
                         }
                     });
         }
         else
         {
             materialFavoriteButton.setOnFavoriteChangeListener(
-                    new MaterialFavoriteButton.OnFavoriteChangeListener() {
-                        @Override
-                        public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
-                            if (favorite == true) {
-                                saveFavorite();
-                                Snackbar.make(buttonView, "Added to Favorite",
-                                        Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                int movie_id = getIntent().getExtras().getInt("id");
-                                String stringId = Integer.toString(movie_id);
-                                Uri uri = FavoriteContract.FavoriteEntry.CONTENT_URI;
-                                uri = uri.buildUpon().appendPath(stringId).build();
-                                getContentResolver().delete(uri, null, null);
-                                Snackbar.make(buttonView, "Removed from Favorite",
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
+                    (buttonView, favorite) -> {
+                        if (favorite) {
+                            saveFavorite();
+                            Snackbar.make(buttonView, "Added to Favorite",
+                                    Snackbar.LENGTH_SHORT).show();
+                        } else {
+                            int movie_id = getIntent().getExtras().getInt("id");
+                            String stringId = Integer.toString(movie_id);
+                            Uri uri = FavoriteContract.FavoriteEntry.CONTENT_URI;
+                            uri = uri.buildUpon().appendPath(stringId).build();
+                            getContentResolver().delete(uri, null, null);
+                            Snackbar.make(buttonView, "Removed from Favorite",
+                                    Snackbar.LENGTH_SHORT).show();
                         }
                     });
 
@@ -224,12 +223,12 @@ public class MovieDetailActivity extends AppCompatActivity {
     private void loadJSON(){
 
         try{
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()){
+            if (com.example.sarada.moviereviews.BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()){
                 Toast.makeText(getApplicationContext(), "Please obtain your API Key from themoviedb.org", Toast.LENGTH_SHORT).show();
                 return;
             }
             RetrofitQuery apiService = RetrofitMake.getClient().create(RetrofitQuery.class);
-            Call<TrailerResponse> call = apiService.getMovieTrailer(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN);
+            Call<TrailerResponse> call = apiService.getMovieTrailer(movie_id, com.example.sarada.moviereviews.BuildConfig.THE_MOVIE_DB_API_TOKEN);
             call.enqueue(new Callback<TrailerResponse>() {
                 @Override
                 public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
@@ -277,16 +276,13 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
-            case R.id.review_item:
-                Intent intent = new Intent(this, ReviewActivity.class);
-                intent.putExtra("movieName",movieName);
-                intent.putExtra("movieId",movie_id);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.review_item) {
+            Intent intent = new Intent(this, ReviewActivity.class);
+            intent.putExtra("movieName", movieName);
+            intent.putExtra("movieId", movie_id);
+            startActivity(intent);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }

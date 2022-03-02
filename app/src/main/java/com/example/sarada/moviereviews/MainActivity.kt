@@ -1,0 +1,304 @@
+package com.example.sarada.moviereviews
+
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.Intent
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.content.res.Configuration
+import android.os.AsyncTask
+import android.os.Bundle
+import android.preference.PreferenceManager
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.sarada.moviereviews.data.FavoriteContract
+import com.example.sarada.moviereviews.models.MovieApiResponse
+import com.example.sarada.moviereviews.models.MovieDetails
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.ref.WeakReference
+
+class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
+
+    var recyclerView: RecyclerView? = null
+    var check: TextView? = null
+    var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var movieList: MutableList<MovieDetails>? = null
+    private var movieAdapter: MovieAdapter? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        recyclerView = findViewById(R.id.recycler_view)
+        check = findViewById(R.id.check)
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout)
+        initViews()
+        /*swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
+        swipeRefreshLayout.setOnRefreshListener(OnRefreshListener {
+            initViews()
+            Toast.makeText(this@MainActivity, "Movies Refreshed", Toast.LENGTH_SHORT).show()
+        })*/
+    }
+
+    val activity: Activity?
+        get() {
+            var context: Context? = this
+            while (context is ContextWrapper) {
+                if (context is Activity) return context
+                context = context.baseContext
+            }
+            return null
+        }
+
+    private fun initViews() {
+        movieList = ArrayList()
+        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
+        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
+            recyclerView!!.layoutManager = mLayoutManager
+        } else {
+            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 4)
+            recyclerView!!.layoutManager = mLayoutManager
+        }
+        recyclerView!!.itemAnimator = DefaultItemAnimator()
+        recyclerView!!.adapter = movieAdapter
+        movieAdapter!!.notifyDataSetChanged()
+        swipeRefreshLayout!!.setColorSchemeResources(android.R.color.holo_orange_dark)
+        swipeRefreshLayout!!.setOnRefreshListener {
+            initViews()
+            Toast.makeText(this@MainActivity, "Movies Refreshed", Toast.LENGTH_SHORT).show()
+        }
+        checkSortOrder()
+    }
+
+    private fun initViews2() {
+        recyclerView = findViewById<View>(R.id.recycler_view) as RecyclerView
+        movieList = ArrayList()
+        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
+        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            recyclerView!!.layoutManager = GridLayoutManager(this, 2)
+        } else {
+            recyclerView!!.layoutManager = GridLayoutManager(this, 4)
+        }
+        recyclerView!!.itemAnimator = DefaultItemAnimator()
+        recyclerView!!.adapter = movieAdapter
+        movieAdapter!!.notifyDataSetChanged()
+        allFavorite
+    }
+
+    private fun loadJSON() {
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                Toast.makeText(
+                    applicationContext,
+                    "Please obtain API key from themoviedb.org",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+            val Client = RetrofitMake()
+            val retrofitQuery = RetrofitMake.getClient().create(
+                RetrofitQuery::class.java
+            )
+            val call = retrofitQuery.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            call.enqueue(object : Callback<MovieApiResponse?> {
+                override fun onResponse(
+                    call: Call<MovieApiResponse?>,
+                    response: Response<MovieApiResponse?>
+                ) {
+                    if (response.body() != null) {
+                        val movies: List<MovieDetails> = response.body()!!.results
+                        recyclerView!!.adapter = MovieAdapter(applicationContext, movies)
+                        recyclerView!!.smoothScrollToPosition(0)
+                        if (swipeRefreshLayout!!.isRefreshing) swipeRefreshLayout!!.isRefreshing =
+                            false
+                    }
+                }
+
+                override fun onFailure(call: Call<MovieApiResponse?>, t: Throwable) {
+                    Log.d("Error", t.message!!)
+                    check!!.visibility = View.VISIBLE
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Error Fetching popular movies!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        } catch (e: Exception) {
+            Log.d("Error", e.message!!)
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadJSON1() {
+        Toast.makeText(applicationContext, "App started.", Toast.LENGTH_SHORT).show()
+        try {
+            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
+                Toast.makeText(
+                    applicationContext,
+                    "Please obtain API key from themoviedb.org",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+            val Client = RetrofitMake()
+            val retrofitQuery = RetrofitMake.getClient().create(
+                RetrofitQuery::class.java
+            )
+            val call = retrofitQuery.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            call.enqueue(object : Callback<MovieApiResponse> {
+                override fun onResponse(
+                    call: Call<MovieApiResponse>,
+                    response: Response<MovieApiResponse>
+                ) {
+                    val movies: List<MovieDetails> = response.body().results
+                    recyclerView!!.adapter = MovieAdapter(applicationContext, movies)
+                    recyclerView!!.smoothScrollToPosition(0)
+                    if (swipeRefreshLayout!!.isRefreshing) {
+                        swipeRefreshLayout!!.isRefreshing = false
+                    }
+                }
+
+                override fun onFailure(call: Call<MovieApiResponse>, t: Throwable) {
+                    Log.d("Error", t.message!!)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Error Fetching top rated movies!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+        } catch (e: Exception) {
+            Log.d("Error", e.message!!)
+            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.sort_order -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
+        checkSortOrder()
+    }
+
+    private fun checkSortOrder() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val sortOrder = preferences.getString(
+            this.getString(R.string.pref_sort_order_key),
+            this.getString(R.string.pref_most_popular)
+        )
+        if (sortOrder == this.getString(R.string.pref_most_popular)) {
+            this@MainActivity.title = "Most Popular Movies"
+            loadJSON()
+        } else if (sortOrder == this.getString(R.string.favorite)) {
+            this@MainActivity.title = "Favorite Movies"
+            initViews2()
+        } else {
+            this@MainActivity.title = "Top Rated Movies"
+            loadJSON1()
+        }
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        if (movieList!!.isEmpty()) checkSortOrder() else checkSortOrder()
+    }
+
+    private val allFavorite: Unit
+        get() {
+            val task = MyAsyncTask(this)
+            task.execute()
+        }
+
+    companion object {
+        class MyAsyncTask internal constructor(context: MainActivity) : AsyncTask<Int, String, String?>() {
+
+            private var resp: String? = null
+            private val activityReference: WeakReference<MainActivity> = WeakReference(context)
+
+            override fun doInBackground(vararg params: Int?): String? {
+                activityReference.get()?.movieList!!.clear()
+                activityReference.get()?.movieList!!.addAll(activityReference.get()?.allFavorite1!!)
+                return null
+            }
+
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onPostExecute(result: String?) {
+
+                val activity = activityReference.get()
+                if (activity == null || activity.isFinishing) return
+                activity.movieAdapter!!.notifyDataSetChanged()
+            }
+
+        }
+    }
+
+    @get:SuppressLint("Range")
+    private val allFavorite1: List<MovieDetails>?
+        get() {
+            val sortOrder = FavoriteContract.FavoriteEntry._ID + " ASC"
+            val favoriteList: MutableList<MovieDetails> = ArrayList()
+            val cursor = contentResolver.query(
+                FavoriteContract.FavoriteEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                sortOrder
+            )
+            if (cursor!!.moveToFirst()) {
+                do {
+                    val movie = MovieDetails()
+                    movie.id =
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID))
+                            .toInt()
+                    movie.originalTitle =
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_TITLE))
+                    movie.voteAverage =
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_USERRATING))
+                            .toDouble()
+                    movie.posterPath =
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH))
+                    movie.overview =
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_PLOT_SYNOPSIS))
+                    movie.releaseDate =
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE))
+                    favoriteList.add(movie)
+                } while (cursor.moveToNext())
+            }
+            @Suppress("SENSELESS_COMPARISON")
+            if (favoriteList == null) Toast.makeText(
+                this@MainActivity,
+                "There are no favorites yet!",
+                Toast.LENGTH_SHORT
+            ).show()
+            cursor.close()
+            return favoriteList
+        }
+}
