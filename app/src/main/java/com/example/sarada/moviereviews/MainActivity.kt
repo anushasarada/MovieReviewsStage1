@@ -10,7 +10,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
 import android.os.AsyncTask
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -38,24 +38,63 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     private lateinit var binding: ActivityMainBinding
 
-    //var recyclerView: RecyclerView? = null
-    var check: TextView? = null
-    var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var movieList: MutableList<MovieDetails>? = null
     private var movieAdapter: MovieAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        //recyclerView = findViewById(R.id.recycler_view)
-        check = findViewById(R.id.check)
-        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout)
+
         initViews()
-        /*swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
-        swipeRefreshLayout.setOnRefreshListener(OnRefreshListener {
+
+        binding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
+        binding.swipeRefreshLayout.setOnRefreshListener(OnRefreshListener {
             initViews()
             Toast.makeText(this@MainActivity, "Movies Refreshed", Toast.LENGTH_SHORT).show()
-        })*/
+        })
+    }
+
+    private fun initViews() {
+
+        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
+            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
+        } else {
+            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 4)
+            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
+        }
+
+        movieList = ArrayList()
+        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
+
+        binding.apply {
+            includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
+            includedLayout.recyclerView.adapter = movieAdapter
+        }
+        movieAdapter!!.notifyDataSetChanged()
+
+        checkSortOrder()
+    }
+
+    private fun initViews2() {
+
+        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 2)
+        } else {
+            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 4)
+        }
+
+        movieList = ArrayList()
+        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
+
+        binding.apply {
+            includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
+            includedLayout.recyclerView.adapter = movieAdapter
+        }
+        movieAdapter!!.notifyDataSetChanged()
+
+        allFavorite
     }
 
     val activity: Activity?
@@ -67,43 +106,6 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
             }
             return null
         }
-
-    private fun initViews() {
-        movieList = ArrayList()
-        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
-        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
-            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
-        } else {
-            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 4)
-            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
-        }
-        binding.apply {
-            includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
-            includedLayout.recyclerView.adapter = movieAdapter
-        }
-        movieAdapter!!.notifyDataSetChanged()
-        swipeRefreshLayout!!.setColorSchemeResources(android.R.color.holo_orange_dark)
-        swipeRefreshLayout!!.setOnRefreshListener {
-            initViews()
-            Toast.makeText(this@MainActivity, "Movies Refreshed", Toast.LENGTH_SHORT).show()
-        }
-        checkSortOrder()
-    }
-
-    private fun initViews2() {
-        movieList = ArrayList()
-        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
-        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 2)
-        } else {
-            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 4)
-        }
-        binding.includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
-        binding.includedLayout.recyclerView.adapter = movieAdapter
-        movieAdapter!!.notifyDataSetChanged()
-        allFavorite
-    }
 
     private fun loadJSON() {
         try {
@@ -129,14 +131,14 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                         binding.includedLayout.recyclerView.adapter =
                             MovieAdapter(applicationContext, movies)
                         binding.includedLayout.recyclerView.smoothScrollToPosition(0)
-                        if (swipeRefreshLayout!!.isRefreshing) swipeRefreshLayout!!.isRefreshing =
+                        if (binding.swipeRefreshLayout.isRefreshing) binding.swipeRefreshLayout.isRefreshing =
                             false
                     }
                 }
 
                 override fun onFailure(call: Call<MovieApiResponse?>, t: Throwable) {
                     Log.d("Error", t.message!!)
-                    check!!.visibility = View.VISIBLE
+                    binding.includedLayout.check.visibility = View.VISIBLE
                     Toast.makeText(
                         this@MainActivity,
                         "Error Fetching popular movies!",
@@ -174,8 +176,8 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                     binding.includedLayout.recyclerView.adapter =
                         MovieAdapter(applicationContext, movies)
                     binding.includedLayout.recyclerView.smoothScrollToPosition(0)
-                    if (swipeRefreshLayout!!.isRefreshing) {
-                        swipeRefreshLayout!!.isRefreshing = false
+                    if (binding.swipeRefreshLayout.isRefreshing) {
+                        binding.swipeRefreshLayout.isRefreshing = false
                     }
                 }
 
@@ -268,7 +270,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
     }
 
     @get:SuppressLint("Range")
-    private val allFavorite1: List<MovieDetails>?
+    private val allFavorite1: List<MovieDetails>
         get() {
             val sortOrder = FavoriteContract.FavoriteEntry._ID + " ASC"
             val favoriteList: MutableList<MovieDetails> = ArrayList()
