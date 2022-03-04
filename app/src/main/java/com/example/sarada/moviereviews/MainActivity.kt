@@ -15,14 +15,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.sarada.moviereviews.RetrofitMake.client
 import com.example.sarada.moviereviews.data.FavoriteContract
@@ -41,6 +39,9 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
     private var movieList: MutableList<MovieDetails>? = null
     private var movieAdapter: MovieAdapter? = null
 
+    private var TOP_RATED_MOVIES: String = "Top Rated Movies"
+    private var MOST_POPULAR_MOVIES: String = "Most Popular Movies"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,10 +50,10 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         initViews()
 
         binding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
-        binding.swipeRefreshLayout.setOnRefreshListener(OnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             initViews()
             Toast.makeText(this@MainActivity, "Movies Refreshed", Toast.LENGTH_SHORT).show()
-        })
+        }
     }
 
     private fun initViews() {
@@ -75,6 +76,28 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         movieAdapter!!.notifyDataSetChanged()
 
         checkSortOrder()
+    }
+
+    private fun checkSortOrder() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val sortOrder = preferences.getString(
+            this.getString(R.string.pref_sort_order_key),
+            this.getString(R.string.pref_most_popular)
+        )
+        when (sortOrder) {
+            this.getString(R.string.pref_most_popular) -> {
+                this@MainActivity.title = MOST_POPULAR_MOVIES
+                loadJSON(MOST_POPULAR_MOVIES)
+            }
+            this.getString(R.string.favorite) -> {
+                this@MainActivity.title = "Favorite Movies"
+                initViews2()
+            }
+            else -> {
+                this@MainActivity.title = TOP_RATED_MOVIES
+                loadJSON(TOP_RATED_MOVIES)
+            }
+        }
     }
 
     private fun initViews2() {
@@ -107,7 +130,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
             return null
         }
 
-    private fun loadJSON() {
+    private fun loadJSON(key: String) {
         try {
             if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
                 Toast.makeText(
@@ -120,7 +143,11 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
             val retrofitQuery = client?.create(
                 RetrofitQuery::class.java
             )
-            val call = retrofitQuery?.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            val call = when (key) {
+                TOP_RATED_MOVIES -> retrofitQuery?.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                MOST_POPULAR_MOVIES -> retrofitQuery?.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                else -> null
+            }
             call?.enqueue(object : Callback<MovieApiResponse?> {
                 override fun onResponse(
                     call: Call<MovieApiResponse?>,
@@ -128,11 +155,10 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 ) {
                     if (response.body() != null) {
                         val movies: List<MovieDetails> = response.body()!!.results
-                        binding.includedLayout.recyclerView.adapter =
-                            MovieAdapter(applicationContext, movies)
+                        binding.includedLayout.recyclerView.adapter = MovieAdapter(applicationContext, movies)
                         binding.includedLayout.recyclerView.smoothScrollToPosition(0)
-                        if (binding.swipeRefreshLayout.isRefreshing) binding.swipeRefreshLayout.isRefreshing =
-                            false
+                        if (binding.swipeRefreshLayout.isRefreshing)
+                            binding.swipeRefreshLayout.isRefreshing = false
                     }
                 }
 
@@ -141,51 +167,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                     binding.includedLayout.check.visibility = View.VISIBLE
                     Toast.makeText(
                         this@MainActivity,
-                        "Error Fetching popular movies!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
-        } catch (e: Exception) {
-            Log.d("Error", e.message!!)
-            Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun loadJSON1() {
-        Toast.makeText(applicationContext, "App started.", Toast.LENGTH_SHORT).show()
-        try {
-            if (BuildConfig.THE_MOVIE_DB_API_TOKEN.isEmpty()) {
-                Toast.makeText(
-                    applicationContext,
-                    "Please obtain API key from themoviedb.org",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return
-            }
-            val retrofitQuery = RetrofitMake.client?.create(
-                RetrofitQuery::class.java
-            )
-            val call = retrofitQuery?.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            call?.enqueue(object : Callback<MovieApiResponse?> {
-                override fun onResponse(
-                    call: Call<MovieApiResponse?>?,
-                    response: Response<MovieApiResponse?>?
-                ) {
-                    val movies: List<MovieDetails> = response?.body()?.results!!
-                    binding.includedLayout.recyclerView.adapter =
-                        MovieAdapter(applicationContext, movies)
-                    binding.includedLayout.recyclerView.smoothScrollToPosition(0)
-                    if (binding.swipeRefreshLayout.isRefreshing) {
-                        binding.swipeRefreshLayout.isRefreshing = false
-                    }
-                }
-
-                override fun onFailure(call: Call<MovieApiResponse?>?, t: Throwable?) {
-                    Log.d("Error", t?.message!!)
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Error Fetching top rated movies!",
+                        """Error Fetching $key !""",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -214,24 +196,6 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
         checkSortOrder()
-    }
-
-    private fun checkSortOrder() {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val sortOrder = preferences.getString(
-            this.getString(R.string.pref_sort_order_key),
-            this.getString(R.string.pref_most_popular)
-        )
-        if (sortOrder == this.getString(R.string.pref_most_popular)) {
-            this@MainActivity.title = "Most Popular Movies"
-            loadJSON()
-        } else if (sortOrder == this.getString(R.string.favorite)) {
-            this@MainActivity.title = "Favorite Movies"
-            initViews2()
-        } else {
-            this@MainActivity.title = "Top Rated Movies"
-            loadJSON1()
-        }
     }
 
     public override fun onResume() {
