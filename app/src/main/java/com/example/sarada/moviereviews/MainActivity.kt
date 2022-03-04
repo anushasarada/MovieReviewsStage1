@@ -18,12 +18,15 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.sarada.moviereviews.RetrofitMake.client
 import com.example.sarada.moviereviews.data.FavoriteContract
+import com.example.sarada.moviereviews.databinding.ActivityMainBinding
 import com.example.sarada.moviereviews.models.MovieApiResponse
 import com.example.sarada.moviereviews.models.MovieDetails
 import retrofit2.Call
@@ -33,7 +36,9 @@ import java.lang.ref.WeakReference
 
 class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
-    var recyclerView: RecyclerView? = null
+    private lateinit var binding: ActivityMainBinding
+
+    //var recyclerView: RecyclerView? = null
     var check: TextView? = null
     var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var movieList: MutableList<MovieDetails>? = null
@@ -41,8 +46,8 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        recyclerView = findViewById(R.id.recycler_view)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        //recyclerView = findViewById(R.id.recycler_view)
         check = findViewById(R.id.check)
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout)
         initViews()
@@ -68,13 +73,15 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
         if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
-            recyclerView!!.layoutManager = mLayoutManager
+            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
         } else {
             val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 4)
-            recyclerView!!.layoutManager = mLayoutManager
+            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
         }
-        recyclerView!!.itemAnimator = DefaultItemAnimator()
-        recyclerView!!.adapter = movieAdapter
+        binding.apply {
+            includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
+            includedLayout.recyclerView.adapter = movieAdapter
+        }
         movieAdapter!!.notifyDataSetChanged()
         swipeRefreshLayout!!.setColorSchemeResources(android.R.color.holo_orange_dark)
         swipeRefreshLayout!!.setOnRefreshListener {
@@ -85,16 +92,15 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
     }
 
     private fun initViews2() {
-        recyclerView = findViewById<View>(R.id.recycler_view) as RecyclerView
         movieList = ArrayList()
         movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
         if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            recyclerView!!.layoutManager = GridLayoutManager(this, 2)
+            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 2)
         } else {
-            recyclerView!!.layoutManager = GridLayoutManager(this, 4)
+            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 4)
         }
-        recyclerView!!.itemAnimator = DefaultItemAnimator()
-        recyclerView!!.adapter = movieAdapter
+        binding.includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
+        binding.includedLayout.recyclerView.adapter = movieAdapter
         movieAdapter!!.notifyDataSetChanged()
         allFavorite
     }
@@ -109,20 +115,20 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 ).show()
                 return
             }
-            val Client = RetrofitMake()
-            val retrofitQuery = RetrofitMake.getClient().create(
+            val retrofitQuery = client?.create(
                 RetrofitQuery::class.java
             )
-            val call = retrofitQuery.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            call.enqueue(object : Callback<MovieApiResponse?> {
+            val call = retrofitQuery?.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            call?.enqueue(object : Callback<MovieApiResponse?> {
                 override fun onResponse(
                     call: Call<MovieApiResponse?>,
                     response: Response<MovieApiResponse?>
                 ) {
                     if (response.body() != null) {
                         val movies: List<MovieDetails> = response.body()!!.results
-                        recyclerView!!.adapter = MovieAdapter(applicationContext, movies)
-                        recyclerView!!.smoothScrollToPosition(0)
+                        binding.includedLayout.recyclerView.adapter =
+                            MovieAdapter(applicationContext, movies)
+                        binding.includedLayout.recyclerView.smoothScrollToPosition(0)
                         if (swipeRefreshLayout!!.isRefreshing) swipeRefreshLayout!!.isRefreshing =
                             false
                     }
@@ -155,26 +161,26 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 ).show()
                 return
             }
-            val Client = RetrofitMake()
-            val retrofitQuery = RetrofitMake.getClient().create(
+            val retrofitQuery = RetrofitMake.client?.create(
                 RetrofitQuery::class.java
             )
-            val call = retrofitQuery.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            call.enqueue(object : Callback<MovieApiResponse> {
+            val call = retrofitQuery?.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            call?.enqueue(object : Callback<MovieApiResponse?> {
                 override fun onResponse(
-                    call: Call<MovieApiResponse>,
-                    response: Response<MovieApiResponse>
+                    call: Call<MovieApiResponse?>?,
+                    response: Response<MovieApiResponse?>?
                 ) {
-                    val movies: List<MovieDetails> = response.body().results
-                    recyclerView!!.adapter = MovieAdapter(applicationContext, movies)
-                    recyclerView!!.smoothScrollToPosition(0)
+                    val movies: List<MovieDetails> = response?.body()?.results!!
+                    binding.includedLayout.recyclerView.adapter =
+                        MovieAdapter(applicationContext, movies)
+                    binding.includedLayout.recyclerView.smoothScrollToPosition(0)
                     if (swipeRefreshLayout!!.isRefreshing) {
                         swipeRefreshLayout!!.isRefreshing = false
                     }
                 }
 
-                override fun onFailure(call: Call<MovieApiResponse>, t: Throwable) {
-                    Log.d("Error", t.message!!)
+                override fun onFailure(call: Call<MovieApiResponse?>?, t: Throwable?) {
+                    Log.d("Error", t?.message!!)
                     Toast.makeText(
                         this@MainActivity,
                         "Error Fetching top rated movies!",
@@ -238,7 +244,8 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         }
 
     companion object {
-        class MyAsyncTask internal constructor(context: MainActivity) : AsyncTask<Int, String, String?>() {
+        class MyAsyncTask internal constructor(context: MainActivity) :
+            AsyncTask<Int, String, String?>() {
 
             private var resp: String? = null
             private val activityReference: WeakReference<MainActivity> = WeakReference(context)
