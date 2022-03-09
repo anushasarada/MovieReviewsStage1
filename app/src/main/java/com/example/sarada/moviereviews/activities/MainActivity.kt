@@ -18,18 +18,23 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.sarada.moviereviews.*
-import com.example.sarada.moviereviews.RetrofitMake.client
 import com.example.sarada.moviereviews.adapters.MovieAdapter
 import com.example.sarada.moviereviews.data.FavoriteContract
 import com.example.sarada.moviereviews.databinding.ActivityMainBinding
 import com.example.sarada.moviereviews.models.MovieApiResponse
 import com.example.sarada.moviereviews.models.MovieDetails
+import com.example.sarada.moviereviews.viewmodels.MainActivityViewModel
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
 import java.lang.ref.WeakReference
 
 private var TOP_RATED_MOVIES: String = "Top Rated Movies"
@@ -39,6 +44,9 @@ private var LOAD_FAVORITES: Boolean = true
 class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     private lateinit var binding: ActivityMainBinding
+    private val viewModel: MainActivityViewModel by lazy {
+        ViewModelProvider(this).get(MainActivityViewModel::class.java)
+    }
 
     private var movieList: MutableList<MovieDetails>? = null
     private var movieAdapter: MovieAdapter? = null
@@ -47,7 +55,8 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         initViews(false)
 
         binding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
@@ -122,15 +131,20 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 ).show()
                 return
             }
-            val retrofitQuery = client?.create(
+
+            /*val retrofitQuery = retrofit?.create(
                 RetrofitQuery::class.java
-            )
-            val call = when (key) {
-                TOP_RATED_MOVIES -> retrofitQuery?.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                MOST_POPULAR_MOVIES -> retrofitQuery?.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-                else -> null
-            }
-            call?.enqueue(object : Callback<MovieApiResponse?> {
+            )*/
+
+            viewModel.movies.observe(this, Observer { newMovies ->
+                binding.includedLayout.recyclerView.adapter = MovieAdapter(applicationContext, newMovies.results)
+                binding.includedLayout.recyclerView.smoothScrollToPosition(0)
+                if (binding.swipeRefreshLayout.isRefreshing)
+                    binding.swipeRefreshLayout.isRefreshing = false
+                binding.includedLayout.check.visibility = View.INVISIBLE
+            })
+
+            /*call?.enqueue(object : Callback<MovieApiResponse?> {
                 override fun onResponse(
                     call: Call<MovieApiResponse?>,
                     response: Response<MovieApiResponse?>
@@ -154,7 +168,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            })*/
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()

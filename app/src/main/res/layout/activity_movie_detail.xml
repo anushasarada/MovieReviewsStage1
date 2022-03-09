@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.sarada.moviereviews.activities.MovieDetailActivity">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.sarada.moviereviews.viewmodels.MovieDetailActivityViewModel" />
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/movie_detail_activity"
         android:layout_width="match_parent"

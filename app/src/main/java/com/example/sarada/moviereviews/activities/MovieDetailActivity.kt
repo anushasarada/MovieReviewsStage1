@@ -21,13 +21,16 @@ import android.content.ContentValues
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import com.example.sarada.moviereviews.BuildConfig
+import com.example.sarada.moviereviews.MoviesApi
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.RetrofitMake.client
-import com.example.sarada.moviereviews.RetrofitQuery
+import com.example.sarada.moviereviews.adapters.MovieAdapter
 import com.example.sarada.moviereviews.adapters.TrailerAdapter
 import com.example.sarada.moviereviews.databinding.ActivityMovieDetailBinding
+import com.example.sarada.moviereviews.viewmodels.MovieDetailActivityViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,6 +42,10 @@ import java.util.*
 class MovieDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMovieDetailBinding
+
+    private val viewModel: MovieDetailActivityViewModel by lazy {
+        ViewModelProvider(this).get(MovieDetailActivityViewModel::class.java)
+    }
 
     private var movieId = 0
     private var thumbnail: String? = null
@@ -52,6 +59,8 @@ class MovieDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
 
         this@MovieDetailActivity.title = "Movie Details:"
 
@@ -207,11 +216,23 @@ class MovieDetailActivity : AppCompatActivity() {
                 ).show()
                 return
             }
-            val apiService = client?.create(
-                RetrofitQuery::class.java
-            )
-            val call = apiService?.getMovieTrailer(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            call?.enqueue(object : Callback<TrailerResponse?> {
+
+            //val call = MoviesApi.retrofitService.getMovieTrailer(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            viewModel.movieId.value = movieId
+            viewModel.trailer.observe(this, androidx.lifecycle.Observer { newTrailer ->
+                if (newTrailer == null) Toast.makeText(
+                    this@MovieDetailActivity,
+                    "There are no trailers for this movie.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding.movieContentDetailActivity.apply{
+                    trailerRecyclerView.adapter = newTrailer?.let { TrailerAdapter(applicationContext,
+                        it.results!!
+                    ) }
+                    trailerRecyclerView.smoothScrollToPosition(0)
+                }
+            })
+            /*call?.enqueue(object : Callback<TrailerResponse?> {
                 override fun onResponse(
                     call: Call<TrailerResponse?>?,
                     response: Response<TrailerResponse?>?
@@ -236,7 +257,7 @@ class MovieDetailActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            })
+            })*/
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()

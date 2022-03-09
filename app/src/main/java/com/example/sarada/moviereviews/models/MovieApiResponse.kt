@@ -3,24 +3,26 @@ package com.example.sarada.moviereviews.models
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import android.os.Parcel
+import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList
 
 /**
  * Created by sarada on 3/11/2018.
  */
-class MovieApiResponse : Parcelable {
-    @SerializedName("page")
-    var page = 0
+@Parcelize
+data class MovieApiResponse(
+    @Json(name = "page") var page: Int = 0,
 
-    @SerializedName("results")
-    var results: List<MovieDetails> = listOf()
+    @Json(name = "results")
+    var results: List<MovieDetails> = listOf(),
 
-    @SerializedName("total_results")
-    var totalResults = 0
+    @Json(name = "total_results")
+    var totalResults: Int = 0,
 
-    @SerializedName("total_pages")
-    var totalPages = 0
-    override fun describeContents(): Int {
+    @Json(name = "total_pages")
+    var totalPages: Int = 0,
+    /*override fun describeContents(): Int {
         return 0
     }
 
@@ -52,7 +54,7 @@ class MovieApiResponse : Parcelable {
                     return arrayOfNulls(size)
                 }
             }
-    }
+    }*/
 
     /*companion object CREATOR : Parcelable.Creator<MovieApiResponse> {
         override fun createFromParcel(parcel: Parcel): MovieApiResponse {
@@ -63,4 +65,4 @@ class MovieApiResponse : Parcelable {
             return arrayOfNulls(size)
         }
     }*/
-}
+):Parcelable

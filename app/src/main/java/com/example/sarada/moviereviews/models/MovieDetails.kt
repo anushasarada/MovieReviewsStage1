@@ -4,54 +4,57 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import android.os.Parcel
 import com.example.sarada.moviereviews.models.MovieDetails
+import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList
 
 /**
  * Created by sarada on 3/8/2018.
  */
-class MovieDetails : Parcelable {
-    @SerializedName("poster_path")
-    var posterPath: String? = null
+@Parcelize
+data class MovieDetails(
+    @Json(name = "poster_path")
+    var posterPath: String? = null,
 
-    @SerializedName("adult")
-    var adult: Boolean? = null
+    @Json(name = "adult")
+    var adult: Boolean? = null,
 
-    @SerializedName("overview")
-    var overview: String? = null
+    @Json(name = "overview")
+    var overview: String? = null,
 
-    @SerializedName("release_date")
-    var releaseDate: String? = null
+    @Json(name = "release_date")
+    var releaseDate: String? = null,
 
-    @SerializedName("genre_ids")
-    var genreIds: List<Int?> = ArrayList()
+    @Json(name = "genre_ids")
+    var genreIds: List<Int?> = ArrayList(),
 
-    @SerializedName("id")
-    var id: Int? = null
+    @Json(name = "id")
+    var id: Int? = null,
 
-    @SerializedName("original_title")
-    var originalTitle: String? = null
+    @Json(name = "original_title")
+    var originalTitle: String? = null,
 
-    @SerializedName("original_language")
-    var originalLanguage: String? = null
+    @Json(name = "original_language")
+    var originalLanguage: String? = null,
 
-    @SerializedName("title")
-    var title: String? = null
+    @Json(name = "title")
+    var title: String? = null,
 
-    @SerializedName("backdrop_path")
-    var backdropPath: String? = null
+    @Json(name = "backdrop_path")
+    var backdropPath: String? = null,
 
-    @SerializedName("popularity")
-    var popularity: Double? = null
+    @Json(name = "popularity")
+    var popularity: Double? = null,
 
-    @SerializedName("vote_count")
-    var voteCount: Int? = null
+    @Json(name = "vote_count")
+    var voteCount: Int? = null,
 
-    @SerializedName("video")
-    var video: Boolean? = null
+    @Json(name = "video")
+    var video: Boolean? = null,
 
-    @SerializedName("vote_average")
-    var voteAverage: Double? = null
-
+    @Json(name = "vote_average")
+    var voteAverage: Double? = null,
+/*
     constructor() {}
     constructor(
         posterPath: String?,
@@ -83,8 +86,8 @@ class MovieDetails : Parcelable {
         this.voteCount = voteCount
         this.video = video
         this.voteAverage = voteAverage
-    }
-
+    }*/
+/*
     var baseImageURL: String? = "https://image.tmdb.org/t/p/w500"
     override fun describeContents(): Int {
         return 0
@@ -138,5 +141,5 @@ class MovieDetails : Parcelable {
                 return arrayOfNulls(size)
             }
         }
-    }
-}
+    }*/
+):Parcelable
