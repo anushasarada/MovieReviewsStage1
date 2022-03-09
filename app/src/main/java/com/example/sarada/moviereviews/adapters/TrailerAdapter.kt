@@ -13,12 +13,16 @@ import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import com.example.sarada.moviereviews.databinding.TrailerCardBinding
 
 /**
  * Created by delaroy on 5/24/17.
  */
 class TrailerAdapter(private val mContext: Context, private val trailerList: List<Trailer>) :
     RecyclerView.Adapter<MyViewHolder>() {
+
+    private lateinit var binding: TrailerCardBinding
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MyViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.trailer_card, viewGroup, false)
