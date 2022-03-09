@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews
+package com.example.sarada.moviereviews.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -20,9 +20,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.sarada.moviereviews.*
 import com.example.sarada.moviereviews.RetrofitMake.client
+import com.example.sarada.moviereviews.adapters.MovieAdapter
 import com.example.sarada.moviereviews.data.FavoriteContract
 import com.example.sarada.moviereviews.databinding.ActivityMainBinding
 import com.example.sarada.moviereviews.models.MovieApiResponse
@@ -59,11 +59,9 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
     private fun initViews() {
 
         if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 2)
-            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
+            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 2)
         } else {
-            val mLayoutManager: RecyclerView.LayoutManager = GridLayoutManager(this, 4)
-            binding.includedLayout.recyclerView.layoutManager = mLayoutManager
+            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 4)
         }
 
         movieList = ArrayList()

@@ -1,8 +1,7 @@
-package com.example.sarada.moviereviews
+package com.example.sarada.moviereviews.activities
 
 import android.preference.PreferenceActivity
 import android.os.Bundle
-import com.example.sarada.moviereviews.SettingsActivity.SettingsFragment
 import android.preference.PreferenceFragment
 import com.example.sarada.moviereviews.R
 

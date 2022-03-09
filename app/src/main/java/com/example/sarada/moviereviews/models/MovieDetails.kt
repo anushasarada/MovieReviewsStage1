@@ -139,14 +139,4 @@ class MovieDetails : Parcelable {
             }
         }
     }
-
-    /*companion object CREATOR : Parcelable.Creator<MovieDetails> {
-        override fun createFromParcel(parcel: Parcel): MovieDetails {
-            return MovieDetails(parcel)
-        }
-
-        override fun newArray(size: Int): Array<MovieDetails?> {
-            return arrayOfNulls(size)
-        }
-    }*/
 }

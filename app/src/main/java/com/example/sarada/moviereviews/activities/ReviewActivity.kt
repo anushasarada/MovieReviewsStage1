@@ -1,22 +1,21 @@
-package com.example.sarada.moviereviews
+package com.example.sarada.moviereviews.activities
 
 import com.example.sarada.moviereviews.RetrofitMake.client
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import android.os.Bundle
-import com.example.sarada.moviereviews.R
 import android.widget.Toast
 import com.example.sarada.moviereviews.models.Review
-import com.example.sarada.moviereviews.ReviewAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sarada.moviereviews.RetrofitMake
-import com.example.sarada.moviereviews.RetrofitQuery
 import com.example.sarada.moviereviews.models.ReviewResponse
 import android.content.Intent
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.example.sarada.moviereviews.MainActivity
+import com.example.sarada.moviereviews.BuildConfig
+import com.example.sarada.moviereviews.R
+import com.example.sarada.moviereviews.RetrofitQuery
+import com.example.sarada.moviereviews.adapters.ReviewAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

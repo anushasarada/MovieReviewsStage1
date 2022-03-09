@@ -1,37 +1,33 @@
-package com.example.sarada.moviereviews
+package com.example.sarada.moviereviews.activities
 
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sarada.moviereviews.models.MovieDetails
 import android.os.Bundle
-import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.data.FavoriteDbHelper
 import android.content.Intent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import android.widget.Toast
 import com.github.ivbaranov.mfb.MaterialFavoriteButton
-import com.github.ivbaranov.mfb.MaterialFavoriteButton.OnFavoriteChangeListener
 import com.google.android.material.snackbar.Snackbar
 import com.example.sarada.moviereviews.data.FavoriteContract
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.example.sarada.moviereviews.models.Trailer
-import com.example.sarada.moviereviews.TrailerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sarada.moviereviews.RetrofitQuery
-import com.example.sarada.moviereviews.RetrofitMake
 import com.example.sarada.moviereviews.models.TrailerResponse
 import android.content.ContentValues
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
+import androidx.databinding.DataBindingUtil
+import com.example.sarada.moviereviews.BuildConfig
+import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.RetrofitMake.client
-import com.example.sarada.moviereviews.ReviewActivity
+import com.example.sarada.moviereviews.RetrofitQuery
+import com.example.sarada.moviereviews.adapters.TrailerAdapter
+import com.example.sarada.moviereviews.databinding.ActivityMovieDetailBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,42 +37,36 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MovieDetailActivity : AppCompatActivity() {
-    var nameOfMovie: TextView? = null
-    var plotSynopsis: TextView? = null
-    var userRating: TextView? = null
-    var releaseDate: TextView? = null
-    var imageView: ImageView? = null
-    var recyclerView: RecyclerView? = null
-    private var movie_id = 0
+
+    private lateinit var binding: ActivityMovieDetailBinding
+
+    private var movieId = 0
     private var thumbnail: String? = null
     private var movieName: String? = null
     private var synopsis: String? = null
     private var rate: String? = null
     private var dateFromDB: String? = null
     var movieDetails: MovieDetails? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_movie_detail)
-        nameOfMovie = findViewById(R.id.movie_title)
-        plotSynopsis = findViewById(R.id.plot_synopsis)
-        userRating = findViewById(R.id.userrating)
-        releaseDate = findViewById(R.id.releasedate)
-        imageView = findViewById(R.id.thumbnail_image_header)
-        recyclerView = findViewById(R.id.recycler_view1)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail)
+
         this@MovieDetailActivity.title = "Movie Details:"
-        val toolBar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolBar)
+
+        setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         initCollapsingToolbar()
-        val intentThatStartedThisActivity = intent
-        if (intentThatStartedThisActivity.hasExtra("movies")) {
+
+        if (intent.hasExtra("movies")) {
             movieDetails = intent.getParcelableExtra("movies")
             thumbnail = movieDetails!!.posterPath
             movieName = movieDetails!!.originalTitle
             synopsis = movieDetails!!.overview
             rate = java.lang.Double.toString(movieDetails!!.voteAverage!!)
             val rating = "$rate/10"
-            movie_id = movieDetails!!.id!!
+            movieId = movieDetails!!.id!!
             dateFromDB = movieDetails!!.releaseDate
             val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
             var yourDate: Date? = null
@@ -92,11 +82,14 @@ class MovieDetailActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(poster)
                 .apply(RequestOptions().placeholder(R.drawable.ic_launcher_foreground))
-                .into(imageView)
-            nameOfMovie?.setText(movieName)
-            plotSynopsis?.setText(synopsis)
-            userRating?.setText(rating)
-            releaseDate?.setText(dateOfRelease)
+                .into(binding.movieContentDetailActivity.thumbnailImageHeader)
+            binding.movieContentDetailActivity.apply {
+                movieTitle.text = movieName
+                plotSynopsis.text = synopsis
+                userRating.text = rating
+                releaseDate.text = dateOfRelease
+            }
+
         } else {
             Toast.makeText(this, "No API data", Toast.LENGTH_SHORT).show()
         }
@@ -111,7 +104,7 @@ class MovieDetailActivity : AppCompatActivity() {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 } else {
-                    val stringId = Integer.toString(movie_id)
+                    val stringId = Integer.toString(movieId)
                     var uri = FavoriteContract.FavoriteEntry.CONTENT_URI
                     uri = uri.buildUpon().appendPath(stringId).build()
                     contentResolver.delete(uri, null, null)
@@ -196,8 +189,10 @@ class MovieDetailActivity : AppCompatActivity() {
         val trailerList: List<Trailer> = ArrayList()
         val adapter = TrailerAdapter(this, trailerList)
         val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        recyclerView!!.layoutManager = mLayoutManager
-        recyclerView!!.adapter = adapter
+        binding.movieContentDetailActivity.apply{
+            trailerRecyclerView.layoutManager = mLayoutManager
+            trailerRecyclerView.adapter = adapter
+        }
         adapter.notifyDataSetChanged()
         loadJSON()
     }
@@ -215,7 +210,7 @@ class MovieDetailActivity : AppCompatActivity() {
             val apiService = client?.create(
                 RetrofitQuery::class.java
             )
-            val call = apiService?.getMovieTrailer(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            val call = apiService?.getMovieTrailer(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN)
             call?.enqueue(object : Callback<TrailerResponse?> {
                 override fun onResponse(
                     call: Call<TrailerResponse?>?,
@@ -227,8 +222,10 @@ class MovieDetailActivity : AppCompatActivity() {
                         "There are no trailers for this movie.",
                         Toast.LENGTH_SHORT
                     ).show()
-                    recyclerView!!.adapter = trailer?.let { TrailerAdapter(applicationContext, it) }
-                    recyclerView!!.smoothScrollToPosition(0)
+                    binding.movieContentDetailActivity.apply{
+                        trailerRecyclerView.adapter = trailer?.let { TrailerAdapter(applicationContext, it) }
+                        trailerRecyclerView.smoothScrollToPosition(0)
+                    }
                 }
 
                 override fun onFailure(call: Call<TrailerResponse?>, t: Throwable) {
@@ -248,7 +245,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
     fun saveFavorite() {
         val values = ContentValues()
-        values.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID, movie_id)
+        values.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID, movieId)
         values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, movieName)
         values.put(FavoriteContract.FavoriteEntry.COLUMN_USERRATING, java.lang.Double.valueOf(rate))
         values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, thumbnail)
@@ -267,7 +264,7 @@ class MovieDetailActivity : AppCompatActivity() {
         if (item.itemId == R.id.review_item) {
             val intent = Intent(this, ReviewActivity::class.java)
             intent.putExtra("movieName", movieName)
-            intent.putExtra("movieId", movie_id)
+            intent.putExtra("movieId", movieId)
             startActivity(intent)
             return true
         }

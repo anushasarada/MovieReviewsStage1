@@ -1,9 +1,9 @@
-package com.example.sarada.moviereviews
+package com.example.sarada.moviereviews.adapters
 
 import android.content.Context
 import com.example.sarada.moviereviews.models.Review
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sarada.moviereviews.ReviewAdapter.MyReviewViewHolder
+import com.example.sarada.moviereviews.adapters.ReviewAdapter.MyReviewViewHolder
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View

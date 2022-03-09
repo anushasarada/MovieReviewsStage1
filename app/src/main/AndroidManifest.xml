@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:launchMode="singleTop"
             android:exported="true">
             <intent-filter>
@@ -24,24 +24,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MovieDetailActivity"
+            android:name=".activities.MovieDetailActivity"
             android:launchMode="singleTop"
             android:label="Movies"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="Settings"/>
-        <activity android:name=".ReviewActivity"
+        <activity android:name=".activities.ReviewActivity"
             android:label="Reviews"
-            android:parentActivityName=".MovieDetailActivity">
+            android:parentActivityName=".activities.MovieDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MovieDetailActivity"/>
+                android:value=".activities.MovieDetailActivity"/>
         </activity>
         <provider
             android:authorities="com.example.sarada.moviereviews"
