@@ -32,6 +32,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.ref.WeakReference
 
+private var TOP_RATED_MOVIES: String = "Top Rated Movies"
+private var MOST_POPULAR_MOVIES: String = "Most Popular Movies"
+private var LOAD_FAVORITES: Boolean = true
+
 class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     private lateinit var binding: ActivityMainBinding
@@ -39,24 +43,21 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
     private var movieList: MutableList<MovieDetails>? = null
     private var movieAdapter: MovieAdapter? = null
 
-    private var TOP_RATED_MOVIES: String = "Top Rated Movies"
-    private var MOST_POPULAR_MOVIES: String = "Most Popular Movies"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        initViews()
+        initViews(false)
 
         binding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
         binding.swipeRefreshLayout.setOnRefreshListener {
-            initViews()
+            initViews(false)
             Toast.makeText(this@MainActivity, "Movies Refreshed", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun initViews() {
+    private fun initViews(showFavorites: Boolean) {
 
         if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 2)
@@ -73,7 +74,10 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         }
         movieAdapter!!.notifyDataSetChanged()
 
-        checkSortOrder()
+        if(showFavorites)
+            allFavorites
+        else
+            checkSortOrder()
     }
 
     private fun checkSortOrder() {
@@ -89,33 +93,13 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
             }
             this.getString(R.string.favorite) -> {
                 this@MainActivity.title = "Favorite Movies"
-                initViews2()
+                initViews(LOAD_FAVORITES)
             }
             else -> {
                 this@MainActivity.title = TOP_RATED_MOVIES
                 loadJSON(TOP_RATED_MOVIES)
             }
         }
-    }
-
-    private fun initViews2() {
-
-        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 2)
-        } else {
-            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 4)
-        }
-
-        movieList = ArrayList()
-        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
-
-        binding.apply {
-            includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
-            includedLayout.recyclerView.adapter = movieAdapter
-        }
-        movieAdapter!!.notifyDataSetChanged()
-
-        allFavorite
     }
 
     val activity: Activity?
@@ -157,6 +141,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                         binding.includedLayout.recyclerView.smoothScrollToPosition(0)
                         if (binding.swipeRefreshLayout.isRefreshing)
                             binding.swipeRefreshLayout.isRefreshing = false
+                        binding.includedLayout.check.visibility = View.INVISIBLE
                     }
                 }
 
@@ -201,7 +186,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         if (movieList!!.isEmpty()) checkSortOrder() else checkSortOrder()
     }
 
-    private val allFavorite: Unit
+    private val allFavorites: Unit
         get() {
             val task = MyAsyncTask(this)
             task.execute()
