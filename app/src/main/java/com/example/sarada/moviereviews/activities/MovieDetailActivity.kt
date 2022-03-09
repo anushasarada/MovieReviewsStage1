@@ -1,40 +1,32 @@
 package com.example.sarada.moviereviews.activities
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.example.sarada.moviereviews.models.MovieDetails
-import android.os.Bundle
-import android.content.Intent
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import android.widget.Toast
-import com.github.ivbaranov.mfb.MaterialFavoriteButton
-import com.google.android.material.snackbar.Snackbar
-import com.example.sarada.moviereviews.data.FavoriteContract
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
-import com.example.sarada.moviereviews.models.Trailer
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sarada.moviereviews.models.TrailerResponse
 import android.content.ContentValues
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.sarada.moviereviews.BuildConfig
-import com.example.sarada.moviereviews.MoviesApi
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.adapters.MovieAdapter
 import com.example.sarada.moviereviews.adapters.TrailerAdapter
+import com.example.sarada.moviereviews.data.FavoriteContract
 import com.example.sarada.moviereviews.databinding.ActivityMovieDetailBinding
+import com.example.sarada.moviereviews.models.MovieDetails
+import com.example.sarada.moviereviews.models.Trailer
 import com.example.sarada.moviereviews.viewmodels.MovieDetailActivityViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.lang.Exception
+import com.github.ivbaranov.mfb.MaterialFavoriteButton
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.snackbar.Snackbar
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -86,7 +78,7 @@ class MovieDetailActivity : AppCompatActivity() {
             }
             val calendar = Calendar.getInstance()
             calendar.time = yourDate
-            val dateOfRelease = Integer.toString(calendar[Calendar.YEAR])
+            val dateOfRelease = calendar[Calendar.YEAR].toString()
             val poster = "https://image.tmdb.org/t/p/w500$thumbnail"
             Glide.with(this)
                 .load(poster)
@@ -113,7 +105,7 @@ class MovieDetailActivity : AppCompatActivity() {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 } else {
-                    val stringId = Integer.toString(movieId)
+                    val stringId = movieId.toString()
                     var uri = FavoriteContract.FavoriteEntry.CONTENT_URI
                     uri = uri.buildUpon().appendPath(stringId).build()
                     contentResolver.delete(uri, null, null)
@@ -217,7 +209,6 @@ class MovieDetailActivity : AppCompatActivity() {
                 return
             }
 
-            //val call = MoviesApi.retrofitService.getMovieTrailer(movieId, BuildConfig.THE_MOVIE_DB_API_TOKEN)
             viewModel.movieId.value = movieId
             viewModel.trailer.observe(this, androidx.lifecycle.Observer { newTrailer ->
                 if (newTrailer == null) Toast.makeText(
@@ -232,32 +223,6 @@ class MovieDetailActivity : AppCompatActivity() {
                     trailerRecyclerView.smoothScrollToPosition(0)
                 }
             })
-            /*call?.enqueue(object : Callback<TrailerResponse?> {
-                override fun onResponse(
-                    call: Call<TrailerResponse?>?,
-                    response: Response<TrailerResponse?>?
-                ) {
-                    val trailer = response?.body()?.results
-                    if (trailer == null) Toast.makeText(
-                        this@MovieDetailActivity,
-                        "There are no trailers for this movie.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding.movieContentDetailActivity.apply{
-                        trailerRecyclerView.adapter = trailer?.let { TrailerAdapter(applicationContext, it) }
-                        trailerRecyclerView.smoothScrollToPosition(0)
-                    }
-                }
-
-                override fun onFailure(call: Call<TrailerResponse?>, t: Throwable) {
-                    Log.d("Error", t.message!!)
-                    Toast.makeText(
-                        this@MovieDetailActivity,
-                        "Error fetching trailer data",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })*/
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()

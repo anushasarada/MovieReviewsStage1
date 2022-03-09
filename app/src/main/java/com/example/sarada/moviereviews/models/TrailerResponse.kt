@@ -1,16 +1,17 @@
 package com.example.sarada.moviereviews.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.example.sarada.moviereviews.models.Trailer
+import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
-class TrailerResponse {
-    @SerializedName("id")
-    var idTrailer = 0
-        private set
+@Parcelize
+data class TrailerResponse(
+    @Json(name = "id")
+    var idTrailer: Int = 0,
 
-    @SerializedName("results")
+    @Json(name = "results")
     val results: List<Trailer>? = null
-    fun seIdTrailer(id_trailer: Int) {
-        idTrailer = id_trailer
-    }
-}
+
+): Parcelable

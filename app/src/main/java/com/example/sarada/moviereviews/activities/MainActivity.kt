@@ -10,7 +10,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
 import android.os.AsyncTask
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -20,21 +19,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.sarada.moviereviews.*
+import com.example.sarada.moviereviews.BuildConfig
+import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.MovieAdapter
 import com.example.sarada.moviereviews.data.FavoriteContract
 import com.example.sarada.moviereviews.databinding.ActivityMainBinding
-import com.example.sarada.moviereviews.models.MovieApiResponse
 import com.example.sarada.moviereviews.models.MovieDetails
 import com.example.sarada.moviereviews.viewmodels.MainActivityViewModel
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
 import java.lang.ref.WeakReference
 
 private var TOP_RATED_MOVIES: String = "Top Rated Movies"
@@ -111,7 +105,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         }
     }
 
-    val activity: Activity?
+    private val activity: Activity?
         get() {
             var context: Context? = this
             while (context is ContextWrapper) {
@@ -132,10 +126,6 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 return
             }
 
-            /*val retrofitQuery = retrofit?.create(
-                RetrofitQuery::class.java
-            )*/
-
             viewModel.movies.observe(this, Observer { newMovies ->
                 binding.includedLayout.recyclerView.adapter = MovieAdapter(applicationContext, newMovies.results)
                 binding.includedLayout.recyclerView.smoothScrollToPosition(0)
@@ -144,31 +134,6 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 binding.includedLayout.check.visibility = View.INVISIBLE
             })
 
-            /*call?.enqueue(object : Callback<MovieApiResponse?> {
-                override fun onResponse(
-                    call: Call<MovieApiResponse?>,
-                    response: Response<MovieApiResponse?>
-                ) {
-                    if (response.body() != null) {
-                        val movies: List<MovieDetails> = response.body()!!.results
-                        binding.includedLayout.recyclerView.adapter = MovieAdapter(applicationContext, movies)
-                        binding.includedLayout.recyclerView.smoothScrollToPosition(0)
-                        if (binding.swipeRefreshLayout.isRefreshing)
-                            binding.swipeRefreshLayout.isRefreshing = false
-                        binding.includedLayout.check.visibility = View.INVISIBLE
-                    }
-                }
-
-                override fun onFailure(call: Call<MovieApiResponse?>, t: Throwable) {
-                    Log.d("Error", t.message!!)
-                    binding.includedLayout.check.visibility = View.VISIBLE
-                    Toast.makeText(
-                        this@MainActivity,
-                        """Error Fetching $key !""",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })*/
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()

@@ -1,32 +1,22 @@
 package com.example.sarada.moviereviews.activities
 
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import android.os.Bundle
-import android.widget.Toast
-import com.example.sarada.moviereviews.models.Review
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.sarada.moviereviews.models.ReviewResponse
 import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.RetrofitQuery
 import com.example.sarada.moviereviews.adapters.ReviewAdapter
-import com.example.sarada.moviereviews.adapters.TrailerAdapter
-import com.example.sarada.moviereviews.databinding.ActivityMovieDetailBinding
 import com.example.sarada.moviereviews.databinding.ActivityReviewBinding
-import com.example.sarada.moviereviews.viewmodels.MovieDetailActivityViewModel
+import com.example.sarada.moviereviews.models.Review
 import com.example.sarada.moviereviews.viewmodels.ReviewActivityViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.lang.Exception
-import java.util.ArrayList
 
 class ReviewActivity : AppCompatActivity() {
 
@@ -88,29 +78,6 @@ class ReviewActivity : AppCompatActivity() {
                 recyclerView2!!.smoothScrollToPosition(0)
             })
 
-            /*val apiService = retrofit!!.create(
-                RetrofitQuery::class.java
-            )
-            val call = apiService.getMovieReviews(movie_id, BuildConfig.THE_MOVIE_DB_API_TOKEN)
-            call!!.enqueue(object : Callback<ReviewResponse?> {
-                override fun onResponse(
-                    call: Call<ReviewResponse?>?,
-                    response: Response<ReviewResponse?>?
-                ) {
-                    val review = response?.body()?.results
-                    recyclerView2!!.adapter = review?.let { ReviewAdapter(applicationContext, it) }
-                    recyclerView2!!.smoothScrollToPosition(0)
-                }
-
-                override fun onFailure(call: Call<ReviewResponse?>, t: Throwable) {
-                    Log.d("Error", t.message!!)
-                    Toast.makeText(
-                        this@ReviewActivity,
-                        "Error fetching trailer data",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })*/
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
