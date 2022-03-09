@@ -211,17 +211,18 @@ class MovieDetailActivity : AppCompatActivity() {
 
             viewModel.movieId.value = movieId
             viewModel.trailer.observe(this, androidx.lifecycle.Observer { newTrailer ->
-                if (newTrailer == null) Toast.makeText(
+                if (newTrailer.results == null){ Toast.makeText(
                     this@MovieDetailActivity,
                     "There are no trailers for this movie.",
                     Toast.LENGTH_SHORT
                 ).show()
+                }else{
                 binding.movieContentDetailActivity.apply{
                     trailerRecyclerView.adapter = newTrailer?.let { TrailerAdapter(applicationContext,
                         it.results!!
                     ) }
                     trailerRecyclerView.smoothScrollToPosition(0)
-                }
+                }}
             })
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
@@ -250,7 +251,7 @@ class MovieDetailActivity : AppCompatActivity() {
         if (item.itemId == R.id.review_item) {
             val intent = Intent(this, ReviewActivity::class.java)
             intent.putExtra("movieName", movieName)
-            intent.putExtra("movieId", movieId)
+            intent.putExtra("movieId", viewModel.movieId.value)
             startActivity(intent)
             return true
         }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.ReviewAdapter
+import com.example.sarada.moviereviews.adapters.TrailerAdapter
 import com.example.sarada.moviereviews.databinding.ActivityReviewBinding
 import com.example.sarada.moviereviews.models.Review
 import com.example.sarada.moviereviews.viewmodels.ReviewActivityViewModel
@@ -72,10 +73,17 @@ class ReviewActivity : AppCompatActivity() {
 
             viewModel.movieId.value = movie_id
             viewModel.reviews.observe(this, androidx.lifecycle.Observer { newReviews ->
-                recyclerView2!!.adapter = newReviews?.let { ReviewAdapter(applicationContext,
-                    it.results!!
-                ) }
-                recyclerView2!!.smoothScrollToPosition(0)
+                if (newReviews.results == null){ Toast.makeText(
+                    this@ReviewActivity,
+                    "There are no reviews for this movie.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                }else{
+                    recyclerView2!!.adapter = newReviews?.let { ReviewAdapter(applicationContext,
+                        it.results!!
+                    ) }
+                    recyclerView2!!.smoothScrollToPosition(0)
+                }
             })
 
         } catch (e: Exception) {

@@ -18,7 +18,7 @@ class MovieDetailActivityViewModel: ViewModel() {
     val trailer: LiveData<TrailerResponse>
         get() = _trailer
 
-    lateinit var movieId: MutableLiveData<Int>
+    var movieId: MutableLiveData<Int> = MutableLiveData<Int>()
 
     init {
         getTrailers()

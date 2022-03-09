@@ -18,7 +18,7 @@ class ReviewActivityViewModel: ViewModel() {
     val reviews: LiveData<ReviewResponse>
         get() = _reviews
 
-    lateinit var movieId: MutableLiveData<Int>
+    var movieId: MutableLiveData<Int> = MutableLiveData<Int>()
 
     init {
         getMovies()
@@ -39,8 +39,6 @@ class ReviewActivityViewModel: ViewModel() {
             }
         }
     }
-
-
 
     override fun onCleared() {
         super.onCleared()

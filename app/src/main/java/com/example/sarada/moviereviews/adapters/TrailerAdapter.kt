@@ -13,7 +13,6 @@ import android.net.Uri
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import com.example.sarada.moviereviews.databinding.TrailerCardBinding
 
 /**
  * Created by delaroy on 5/24/17.
@@ -21,7 +20,7 @@ import com.example.sarada.moviereviews.databinding.TrailerCardBinding
 class TrailerAdapter(private val mContext: Context, private val trailerList: List<Trailer>) :
     RecyclerView.Adapter<MyViewHolder>() {
 
-    private lateinit var binding: TrailerCardBinding
+    //private lateinit var binding: TrailerCardBinding
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MyViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
@@ -39,11 +38,11 @@ class TrailerAdapter(private val mContext: Context, private val trailerList: Lis
 
     inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var title: TextView
-        var thumbnail: ImageView
+        //var thumbnail: ImageView
 
         init {
             title = view.findViewById<View>(R.id.title) as TextView
-            thumbnail = view.findViewById<View>(R.id.mainActivity_image) as ImageView
+            //thumbnail = view.findViewById<View>(R.id.mainActivity_image) as ImageView
             view.setOnClickListener { v ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
