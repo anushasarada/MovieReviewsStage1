@@ -17,11 +17,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.TrailerAdapter
-import com.example.sarada.moviereviews.data.FavoriteContract
+import com.example.sarada.moviereviews.database.FavoriteContract
+import com.example.sarada.moviereviews.database.FavoritesDatabase
 import com.example.sarada.moviereviews.databinding.ActivityMovieDetailBinding
+import com.example.sarada.moviereviews.factories.MovieDetailViewModelFactory
 import com.example.sarada.moviereviews.models.MovieDetails
 import com.example.sarada.moviereviews.models.Trailer
-import com.example.sarada.moviereviews.viewmodels.MovieDetailActivityViewModel
+import com.example.sarada.moviereviews.viewmodels.MovieDetailViewModel
 import com.github.ivbaranov.mfb.MaterialFavoriteButton
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
@@ -34,10 +36,10 @@ import java.util.*
 class MovieDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMovieDetailBinding
-
-    private val viewModel: MovieDetailActivityViewModel by lazy {
-        ViewModelProvider(this).get(MovieDetailActivityViewModel::class.java)
-    }
+    private lateinit var viewModel: MovieDetailViewModel
+    /*private val viewModel: MovieDetailViewModel by lazy {
+        ViewModelProvider(this).get(MovieDetailViewModel::class.java)
+    }*/
 
     private var movieId = 0
     private var thumbnail: String? = null
@@ -52,7 +54,13 @@ class MovieDetailActivity : AppCompatActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+
+        val application = requireNotNull(this@MovieDetailActivity).application
+        val dataSource = FavoritesDatabase.getInstance(application).favoritesDatabaseDao
+        val viewModelFactory = MovieDetailViewModelFactory(dataSource, application)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(MovieDetailViewModel::class.java)
+
+        binding.movieDetailViewModel = viewModel
 
         this@MovieDetailActivity.title = "Movie Details:"
 
@@ -94,10 +102,10 @@ class MovieDetailActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "No API data", Toast.LENGTH_SHORT).show()
         }
-        val materialFavoriteButton = findViewById<MaterialFavoriteButton>(R.id.favorite_button)
+
         if (Exists(movieName)) {
-            materialFavoriteButton.isFavorite = true
-            materialFavoriteButton.setOnFavoriteChangeListener { buttonView: MaterialFavoriteButton?, favorite: Boolean ->
+            binding.movieContentDetailActivity.favoriteButton.isFavorite = true
+            binding.movieContentDetailActivity.favoriteButton.setOnFavoriteChangeListener { buttonView: MaterialFavoriteButton?, favorite: Boolean ->
                 if (favorite) {
                     saveFavorite()
                     Snackbar.make(
@@ -116,7 +124,7 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
             }
         } else {
-            materialFavoriteButton.setOnFavoriteChangeListener { buttonView: MaterialFavoriteButton?, favorite: Boolean ->
+            binding.movieContentDetailActivity.favoriteButton.setOnFavoriteChangeListener { buttonView: MaterialFavoriteButton?, favorite: Boolean ->
                 if (favorite) {
                     saveFavorite()
                     Snackbar.make(

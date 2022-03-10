@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ReviewActivityViewModel: ViewModel() {
+class ReviewViewModel: ViewModel() {
 
     private val _reviews = MutableLiveData<ReviewResponse>()
     val reviews: LiveData<ReviewResponse>

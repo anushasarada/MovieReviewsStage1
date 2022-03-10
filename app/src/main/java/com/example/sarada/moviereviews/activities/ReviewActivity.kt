@@ -14,17 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.ReviewAdapter
-import com.example.sarada.moviereviews.adapters.TrailerAdapter
 import com.example.sarada.moviereviews.databinding.ActivityReviewBinding
 import com.example.sarada.moviereviews.models.Review
-import com.example.sarada.moviereviews.viewmodels.ReviewActivityViewModel
+import com.example.sarada.moviereviews.viewmodels.ReviewViewModel
 
 class ReviewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityReviewBinding
 
-    private val viewModel: ReviewActivityViewModel by lazy {
-        ViewModelProvider(this).get(ReviewActivityViewModel::class.java)
+    private val viewModel: ReviewViewModel by lazy {
+        ViewModelProvider(this).get(ReviewViewModel::class.java)
     }
 
     var recyclerView2: RecyclerView? = null

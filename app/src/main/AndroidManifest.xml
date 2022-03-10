@@ -45,7 +45,7 @@
         </activity>
         <provider
             android:authorities="com.example.sarada.moviereviews"
-            android:name="com.example.sarada.moviereviews.data.FavoriteContentProvider"
+            android:name="com.example.sarada.moviereviews.database.FavoriteContentProvider"
             android:exported="false"/>
     </application>
 

@@ -1,7 +1,6 @@
-package com.example.sarada.moviereviews.data
+package com.example.sarada.moviereviews.database
 
 import android.net.Uri
-import com.example.sarada.moviereviews.data.FavoriteContract
 import android.provider.BaseColumns
 
 object FavoriteContract {

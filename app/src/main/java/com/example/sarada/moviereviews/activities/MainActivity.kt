@@ -25,10 +25,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.MovieAdapter
-import com.example.sarada.moviereviews.data.FavoriteContract
+import com.example.sarada.moviereviews.database.FavoriteContract
 import com.example.sarada.moviereviews.databinding.ActivityMainBinding
 import com.example.sarada.moviereviews.models.MovieDetails
-import com.example.sarada.moviereviews.viewmodels.MainActivityViewModel
+import com.example.sarada.moviereviews.viewmodels.MainViewModel
 import java.lang.ref.WeakReference
 
 private var TOP_RATED_MOVIES: String = "Top Rated Movies"
@@ -38,8 +38,8 @@ private var LOAD_FAVORITES: Boolean = true
 class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainActivityViewModel by lazy {
-        ViewModelProvider(this).get(MainActivityViewModel::class.java)
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
     private var movieList: MutableList<MovieDetails>? = null
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        binding.mainViewModel = viewModel
         initViews(false)
 
         binding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)

@@ -12,9 +12,9 @@ import android.widget.TextView
 
 class ReviewAdapter(private val mContext: Context, private val reviewList: List<Review>) :
     RecyclerView.Adapter<MyReviewViewHolder>() {
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MyReviewViewHolder {
-        val view =
-            LayoutInflater.from(viewGroup.context).inflate(R.layout.review_card, viewGroup, false)
+        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.review_card, viewGroup, false)
         return MyReviewViewHolder(view)
     }
 
@@ -28,12 +28,7 @@ class ReviewAdapter(private val mContext: Context, private val reviewList: List<
     }
 
     inner class MyReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var author: TextView
-        var content: TextView
-
-        init {
-            author = view.findViewById<View>(R.id.author_name) as TextView
-            content = view.findViewById<View>(R.id.content) as TextView
-        }
+        var author: TextView = view.findViewById<View>(R.id.author_name) as TextView
+        var content: TextView = view.findViewById<View>(R.id.content) as TextView
     }
 }

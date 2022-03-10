@@ -6,8 +6,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="com.example.sarada.moviereviews.viewmodels.MovieDetailActivityViewModel" />
+            name="movieDetailViewModel"
+            type="com.example.sarada.moviereviews.viewmodels.MovieDetailViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

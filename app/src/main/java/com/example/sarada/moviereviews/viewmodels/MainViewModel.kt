@@ -6,34 +6,38 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
-import com.example.sarada.moviereviews.models.TrailerResponse
+import com.example.sarada.moviereviews.models.MovieApiResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MovieDetailActivityViewModel: ViewModel() {
+class MainViewModel: ViewModel() {
 
-    private val _trailer = MutableLiveData<TrailerResponse>()
-    val trailer: LiveData<TrailerResponse>
-        get() = _trailer
+    private val _movies = MutableLiveData<MovieApiResponse>()
+    val movies: LiveData<MovieApiResponse>
+        get() = _movies
 
-    var movieId: MutableLiveData<Int> = MutableLiveData<Int>()
+    /*val call = when (key) {
+        TOP_RATED_MOVIES -> retrofitQuery?.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+        MOST_POPULAR_MOVIES -> retrofitQuery?.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+        else -> null
+    }*/
 
     init {
-        getTrailers()
-        _trailer.value = TrailerResponse()
+        getMovies()
+        _movies.value = MovieApiResponse()
     }
 
-    private fun getTrailers() {
+    private fun getMovies() {
         val viewModelJob = Job()
         val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
         coroutineScope.launch {
-            val getUserDetailsDeferred =
-                MoviesApi.retrofitService.getMovieTrailer(movieId.value!!, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            val getMoviesDeferred =
+                MoviesApi.retrofitService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
             try {
-                _trailer.value = getUserDetailsDeferred.await()
+                _movies.value = getMoviesDeferred.await()
             } catch (t: Throwable) {
                 Log.d("Error fetching data", t.message!!)
             }
@@ -45,5 +49,4 @@ class MovieDetailActivityViewModel: ViewModel() {
     override fun onCleared() {
         super.onCleared()
     }
-
 }

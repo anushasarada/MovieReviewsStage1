@@ -1,13 +1,9 @@
-package com.example.sarada.moviereviews.data
+package com.example.sarada.moviereviews.database
 
 import android.content.ContentProvider
-import com.example.sarada.moviereviews.data.FavoriteDbHelper
-import android.database.sqlite.SQLiteDatabase
-import com.example.sarada.moviereviews.data.FavoriteContentProvider
-import com.example.sarada.moviereviews.data.FavoriteContract.FavoriteEntry
+import com.example.sarada.moviereviews.database.FavoriteContract.FavoriteEntry
 import android.content.ContentValues
 import android.content.ContentUris
-import com.example.sarada.moviereviews.data.FavoriteContract
 import android.content.UriMatcher
 import android.database.Cursor
 import android.database.SQLException
@@ -15,7 +11,9 @@ import android.net.Uri
 import java.lang.UnsupportedOperationException
 
 class FavoriteContentProvider : ContentProvider() {
+
     private var favoriteDbHelper: FavoriteDbHelper? = null
+
     override fun onCreate(): Boolean {
         val context = context
         favoriteDbHelper = FavoriteDbHelper(context)
