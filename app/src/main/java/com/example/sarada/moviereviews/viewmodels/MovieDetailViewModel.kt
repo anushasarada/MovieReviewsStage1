@@ -5,11 +5,10 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
 import com.example.sarada.moviereviews.database.FavoritesDatabaseDao
-import com.example.sarada.moviereviews.models.TrailerResponse
+import com.example.sarada.moviereviews.models.datac.TrailerResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

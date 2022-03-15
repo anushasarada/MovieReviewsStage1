@@ -1,11 +1,8 @@
-package com.example.sarada.moviereviews.models
+package com.example.sarada.moviereviews.models.datac
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
-import android.os.Parcel
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
-import java.util.ArrayList
 
 /**
  * Created by sarada on 3/11/2018.
@@ -23,4 +20,4 @@ data class MovieApiResponse(
     @Json(name = "total_pages")
     var totalPages: Int = 0,
 
-):Parcelable
+    ):Parcelable

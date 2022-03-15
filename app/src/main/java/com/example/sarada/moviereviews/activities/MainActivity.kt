@@ -1,5 +1,6 @@
 package com.example.sarada.moviereviews.activities
 
+import NetworkStatusHelper
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -17,7 +18,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -27,12 +27,11 @@ import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.MovieAdapter
 import com.example.sarada.moviereviews.database.FavoriteContract
 import com.example.sarada.moviereviews.databinding.ActivityMainBinding
-import com.example.sarada.moviereviews.models.MovieDetails
+import com.example.sarada.moviereviews.models.datac.MovieDetails
+import com.example.sarada.moviereviews.models.sealedc.NetworkStatus
 import com.example.sarada.moviereviews.viewmodels.MainViewModel
 import java.lang.ref.WeakReference
 
-private var TOP_RATED_MOVIES: String = "Top Rated Movies"
-private var MOST_POPULAR_MOVIES: String = "Most Popular Movies"
 private var LOAD_FAVORITES: Boolean = true
 
 class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
@@ -91,16 +90,16 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         )
         when (sortOrder) {
             this.getString(R.string.pref_most_popular) -> {
-                this@MainActivity.title = MOST_POPULAR_MOVIES
-                loadJSON(MOST_POPULAR_MOVIES)
+                this@MainActivity.title = resources.getString(R.string.most_popular_movies)
+                loadJSON(resources.getString(R.string.most_popular_movies))
             }
             this.getString(R.string.favorite) -> {
                 this@MainActivity.title = "Favorite Movies"
                 initViews(LOAD_FAVORITES)
             }
             else -> {
-                this@MainActivity.title = TOP_RATED_MOVIES
-                loadJSON(TOP_RATED_MOVIES)
+                this@MainActivity.title = resources.getString(R.string.top_rated_movies)
+                loadJSON(resources.getString(R.string.top_rated_movies))
             }
         }
     }
@@ -125,15 +124,31 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 ).show()
                 return
             }
-
-            viewModel.movies.observe(this, Observer { newMovies ->
-                binding.includedLayout.recyclerView.adapter = MovieAdapter(applicationContext, newMovies.results)
-                binding.includedLayout.recyclerView.smoothScrollToPosition(0)
-                if (binding.swipeRefreshLayout.isRefreshing)
-                    binding.swipeRefreshLayout.isRefreshing = false
-                binding.includedLayout.check.visibility = View.INVISIBLE
-            })
-
+            NetworkStatusHelper(this@MainActivity).observe(this) {
+                when (it) {
+                    NetworkStatus.Available -> {
+                        viewModel.setTypeForMovies(key)
+                        viewModel.movies.observe(this) { newMovies ->
+                            binding.includedLayout.recyclerView.adapter =
+                                MovieAdapter(applicationContext, newMovies.results)
+                            binding.includedLayout.recyclerView.smoothScrollToPosition(0)
+                            if (binding.swipeRefreshLayout.isRefreshing)
+                                binding.swipeRefreshLayout.isRefreshing = false
+                            binding.includedLayout.apply{
+                                recyclerView.visibility = View.VISIBLE
+                                check.visibility = View.GONE
+                            }
+                        }
+                    }
+                    NetworkStatus.Unavailable -> {
+                        binding.includedLayout.apply {
+                            recyclerView.visibility = View.GONE
+                            check.visibility = View.VISIBLE
+                            check.text = "Please check your internet connection"
+                        }
+                    }
+                }
+            }
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()

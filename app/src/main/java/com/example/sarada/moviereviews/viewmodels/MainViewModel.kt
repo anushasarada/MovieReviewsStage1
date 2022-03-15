@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
-import com.example.sarada.moviereviews.models.MovieApiResponse
+import com.example.sarada.moviereviews.models.datac.MovieApiResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,17 +14,17 @@ import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {
 
+    private var TOP_RATED_MOVIES: String = "Top Rated Movies"
+    private var MOST_POPULAR_MOVIES: String = "Most Popular Movies"
+
     private val _movies = MutableLiveData<MovieApiResponse>()
     val movies: LiveData<MovieApiResponse>
         get() = _movies
 
-    /*val call = when (key) {
-        TOP_RATED_MOVIES -> retrofitQuery?.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-        MOST_POPULAR_MOVIES -> retrofitQuery?.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
-        else -> null
-    }*/
+    lateinit var key: String
 
     init {
+        key = TOP_RATED_MOVIES
         getMovies()
         _movies.value = MovieApiResponse()
     }
@@ -34,17 +34,26 @@ class MainViewModel: ViewModel() {
         val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
         coroutineScope.launch {
-            val getMoviesDeferred =
-                MoviesApi.retrofitService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+
+            val getMoviesDeferred = when (key) {
+                TOP_RATED_MOVIES -> MoviesApi.retrofitService.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                MOST_POPULAR_MOVIES -> MoviesApi.retrofitService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                else -> null
+            }
+
             try {
-                _movies.value = getMoviesDeferred.await()
+                if (getMoviesDeferred != null) {
+                    _movies.value = getMoviesDeferred.await()
+                }
             } catch (t: Throwable) {
                 Log.d("Error fetching data", t.message!!)
             }
         }
     }
 
-
+    fun setTypeForMovies(key: String) {
+        this.key = key
+    }
 
     override fun onCleared() {
         super.onCleared()

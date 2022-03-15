@@ -1,7 +1,7 @@
 package com.example.sarada.moviereviews.adapters
 
 import android.content.Context
-import com.example.sarada.moviereviews.models.Trailer
+import com.example.sarada.moviereviews.models.datac.Trailer
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sarada.moviereviews.adapters.TrailerAdapter.MyViewHolder
 import android.view.ViewGroup
@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 
 /**

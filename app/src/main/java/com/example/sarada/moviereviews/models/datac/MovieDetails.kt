@@ -1,9 +1,6 @@
-package com.example.sarada.moviereviews.models
+package com.example.sarada.moviereviews.models.datac
 
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
-import android.os.Parcel
-import com.example.sarada.moviereviews.models.MovieDetails
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList

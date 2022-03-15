@@ -21,8 +21,8 @@ import com.example.sarada.moviereviews.database.FavoriteContract
 import com.example.sarada.moviereviews.database.FavoritesDatabase
 import com.example.sarada.moviereviews.databinding.ActivityMovieDetailBinding
 import com.example.sarada.moviereviews.factories.MovieDetailViewModelFactory
-import com.example.sarada.moviereviews.models.MovieDetails
-import com.example.sarada.moviereviews.models.Trailer
+import com.example.sarada.moviereviews.models.datac.MovieDetails
+import com.example.sarada.moviereviews.models.datac.Trailer
 import com.example.sarada.moviereviews.viewmodels.MovieDetailViewModel
 import com.github.ivbaranov.mfb.MaterialFavoriteButton
 import com.google.android.material.appbar.AppBarLayout
@@ -218,27 +218,32 @@ class MovieDetailActivity : AppCompatActivity() {
             }
 
             viewModel.movieId.value = movieId
-            viewModel.trailer.observe(this, androidx.lifecycle.Observer { newTrailer ->
-                if (newTrailer.results == null){ Toast.makeText(
-                    this@MovieDetailActivity,
-                    "There are no trailers for this movie.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                }else{
-                binding.movieContentDetailActivity.apply{
-                    trailerRecyclerView.adapter = newTrailer?.let { TrailerAdapter(applicationContext,
-                        it.results!!
-                    ) }
-                    trailerRecyclerView.smoothScrollToPosition(0)
-                }}
-            })
+            viewModel.trailer.observe(this) { newTrailer ->
+                if (newTrailer.results == null) {
+                    Toast.makeText(
+                        this@MovieDetailActivity,
+                        "There are no trailers for this movie.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    binding.movieContentDetailActivity.apply {
+                        trailerRecyclerView.adapter = newTrailer?.let {
+                            TrailerAdapter(
+                                applicationContext,
+                                it.results!!
+                            )
+                        }
+                        trailerRecyclerView.smoothScrollToPosition(0)
+                    }
+                }
+            }
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun saveFavorite() {
+    private fun saveFavorite() {
         val values = ContentValues()
         values.put(FavoriteContract.FavoriteEntry.COLUMN_MOVIEID, movieId)
         values.put(FavoriteContract.FavoriteEntry.COLUMN_TITLE, movieName)
@@ -246,8 +251,9 @@ class MovieDetailActivity : AppCompatActivity() {
         values.put(FavoriteContract.FavoriteEntry.COLUMN_POSTER_PATH, thumbnail)
         values.put(FavoriteContract.FavoriteEntry.COLUMN_PLOT_SYNOPSIS, synopsis)
         values.put(FavoriteContract.FavoriteEntry.COLUMN_RELEASE_DATE, dateFromDB)
-        val uri = contentResolver.insert(FavoriteContract.FavoriteEntry.CONTENT_URI, values)
-        if (uri != null) Toast.makeText(baseContext, uri.toString(), Toast.LENGTH_SHORT).show()
+        contentResolver.insert(FavoriteContract.FavoriteEntry.CONTENT_URI, values)
+        //val uri = contentResolver.insert(FavoriteContract.FavoriteEntry.CONTENT_URI, values)
+        //if (uri != null) Toast.makeText(baseContext, uri.toString(), Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews.models
+package com.example.sarada.moviereviews.models.datac
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

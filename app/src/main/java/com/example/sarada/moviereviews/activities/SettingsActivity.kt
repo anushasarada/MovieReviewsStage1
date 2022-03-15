@@ -3,18 +3,19 @@ package com.example.sarada.moviereviews.activities
 import android.preference.PreferenceActivity
 import android.os.Bundle
 import android.preference.PreferenceFragment
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceFragmentCompat
 import com.example.sarada.moviereviews.R
 
-class SettingsActivity : PreferenceActivity() {
+class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fragmentManager.beginTransaction().replace(android.R.id.content, SettingsFragment())
-            .commit()
+        supportFragmentManager.beginTransaction().replace(android.R.id.content, SettingsFragment()).commit()
     }
 
-    class SettingsFragment : PreferenceFragment() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
+    class SettingsFragment : PreferenceFragmentCompat() {
+
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.preference)
         }
     }

@@ -16,5 +16,7 @@
     <string name="content">Content</string>
     <string name="internet_movie">Didn\'t see any movies?\nTrying refreshing by swiping down\nor\ncheck your internet connection</string>
     <string name="trailer">Trailers:</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="most_popular_movies">Most Popular Movies</string>
 
 </resources>

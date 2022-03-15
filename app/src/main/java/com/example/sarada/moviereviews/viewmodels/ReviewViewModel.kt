@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
-import com.example.sarada.moviereviews.models.ReviewResponse
+import com.example.sarada.moviereviews.models.datac.ReviewResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

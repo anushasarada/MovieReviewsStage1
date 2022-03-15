@@ -5,8 +5,8 @@
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.4046296296296296" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3088768115942029" />
-        <entry key="app/src/main/res/layout/activity_movie_content_detail.xml" value="0.3958333333333333" />
-        <entry key="app/src/main/res/layout/activity_movie_detail.xml" value="0.19630192502532928" />
+        <entry key="app/src/main/res/layout/activity_movie_content_detail.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_movie_detail.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_review.xml" value="0.21822916666666667" />
         <entry key="app/src/main/res/layout/recycler_activity.xml" value="0.3088768115942029" />
         <entry key="app/src/main/res/layout/recyclerview_item_activity.xml" value="0.1308876811594203" />
@@ -14,6 +14,7 @@
         <entry key="app/src/main/res/menu/detail_menu.xml" value="0.3989752875434028" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/review_menu.xml" value="0.25" />
+        <entry key="app/src/main/res/xml/preference.xml" value="0.19630192502532928" />
       </map>
     </option>
   </component>

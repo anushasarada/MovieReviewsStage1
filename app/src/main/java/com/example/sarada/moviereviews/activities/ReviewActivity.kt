@@ -15,7 +15,7 @@ import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.ReviewAdapter
 import com.example.sarada.moviereviews.databinding.ActivityReviewBinding
-import com.example.sarada.moviereviews.models.Review
+import com.example.sarada.moviereviews.models.datac.Review
 import com.example.sarada.moviereviews.viewmodels.ReviewViewModel
 
 class ReviewActivity : AppCompatActivity() {
@@ -26,8 +26,7 @@ class ReviewActivity : AppCompatActivity() {
         ViewModelProvider(this).get(ReviewViewModel::class.java)
     }
 
-    var recyclerView2: RecyclerView? = null
-    var movie_id = 0
+    var movieId = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,8 +34,7 @@ class ReviewActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        recyclerView2 = findViewById(R.id.recycler_view2)
-        movie_id = intent.extras!!.getInt("movieId")
+        movieId = intent.extras!!.getInt("movieId")
         this@ReviewActivity.title = """
             Reviews of 
             ${intent.extras!!.getString("movieName")}
@@ -46,15 +44,15 @@ class ReviewActivity : AppCompatActivity() {
             intent.extras!!.getString("movieName"),
             Toast.LENGTH_SHORT
         ).show()
-        initViews1()
+        initViews()
     }
 
-    private fun initViews1() {
+    private fun initViews() {
         val reviewList: List<Review> = ArrayList()
         val reviewAdapter = ReviewAdapter(this, reviewList)
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        recyclerView2!!.layoutManager = layoutManager1
-        recyclerView2!!.adapter = reviewAdapter
+        binding.recyclerView2.layoutManager = layoutManager1
+        binding.recyclerView2.adapter = reviewAdapter
         reviewAdapter.notifyDataSetChanged()
         loadJSON1()
     }
@@ -70,20 +68,24 @@ class ReviewActivity : AppCompatActivity() {
                 return
             }
 
-            viewModel.movieId.value = movie_id
-            viewModel.reviews.observe(this, androidx.lifecycle.Observer { newReviews ->
-                if (newReviews.results == null){ Toast.makeText(
-                    this@ReviewActivity,
-                    "There are no reviews for this movie.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                }else{
-                    recyclerView2!!.adapter = newReviews?.let { ReviewAdapter(applicationContext,
-                        it.results!!
-                    ) }
-                    recyclerView2!!.smoothScrollToPosition(0)
+            viewModel.movieId.value = movieId
+            viewModel.reviews.observe(this) { newReviews ->
+                if (newReviews.results == null) {
+                    Toast.makeText(
+                        this@ReviewActivity,
+                        "There are no reviews for this movie.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    binding.recyclerView2.adapter = newReviews?.let {
+                        ReviewAdapter(
+                            applicationContext,
+                            it.results!!
+                        )
+                    }
+                    binding.recyclerView2.smoothScrollToPosition(0)
                 }
-            })
+            }
 
         } catch (e: Exception) {
             Log.d("Error", e.message!!)

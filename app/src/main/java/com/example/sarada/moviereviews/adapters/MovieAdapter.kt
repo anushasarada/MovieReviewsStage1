@@ -1,7 +1,7 @@
 package com.example.sarada.moviereviews.adapters
 
 import android.content.Context
-import com.example.sarada.moviereviews.models.MovieDetails
+import com.example.sarada.moviereviews.models.datac.MovieDetails
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sarada.moviereviews.adapters.MovieAdapter.MovieViewHolder
 import android.view.ViewGroup

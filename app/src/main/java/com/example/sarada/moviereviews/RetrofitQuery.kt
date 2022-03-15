@@ -1,11 +1,10 @@
 package com.example.sarada.moviereviews
 
 import retrofit2.http.GET
-import com.example.sarada.moviereviews.models.MovieApiResponse
-import com.example.sarada.moviereviews.models.TrailerResponse
-import com.example.sarada.moviereviews.models.ReviewResponse
+import com.example.sarada.moviereviews.models.datac.MovieApiResponse
+import com.example.sarada.moviereviews.models.datac.TrailerResponse
+import com.example.sarada.moviereviews.models.datac.ReviewResponse
 import kotlinx.coroutines.Deferred
-import retrofit2.Call
 import retrofit2.http.Path
 import retrofit2.http.Query
 
