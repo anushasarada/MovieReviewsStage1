@@ -4,13 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
 import com.example.sarada.moviereviews.models.datac.MovieApiResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MainViewModel: ViewModel() {
 
@@ -23,6 +21,9 @@ class MainViewModel: ViewModel() {
 
     lateinit var key: String
 
+    private val viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
     init {
         key = TOP_RATED_MOVIES
         getMovies()
@@ -30,8 +31,6 @@ class MainViewModel: ViewModel() {
     }
 
     private fun getMovies() {
-        val viewModelJob = Job()
-        val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
         coroutineScope.launch {
 
@@ -57,5 +56,6 @@ class MainViewModel: ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+        viewModelJob.cancel()
     }
 }

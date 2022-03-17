@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
 import com.example.sarada.moviereviews.database.FavoritesDatabaseDao
@@ -25,14 +26,15 @@ class MovieDetailViewModel(
 
     var movieId: MutableLiveData<Int> = MutableLiveData<Int>()
 
+    private val viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
     init {
         getTrailers()
         _trailer.value = TrailerResponse()
     }
 
     private fun getTrailers() {
-        val viewModelJob = Job()
-        val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
         coroutineScope.launch {
             val getUserDetailsDeferred = MoviesApi.retrofitService.getMovieTrailer(movieId.value!!, BuildConfig.THE_MOVIE_DB_API_TOKEN)
@@ -46,6 +48,7 @@ class MovieDetailViewModel(
 
     override fun onCleared() {
         super.onCleared()
+        viewModelJob.cancel()
     }
 
 }

@@ -20,14 +20,15 @@ class ReviewViewModel: ViewModel() {
 
     var movieId: MutableLiveData<Int> = MutableLiveData<Int>()
 
+    val viewModelJob = Job()
+    val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
     init {
         getMovies()
         _reviews.value = ReviewResponse()
     }
 
     private fun getMovies() {
-        val viewModelJob = Job()
-        val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
         coroutineScope.launch {
             val getMoviesDeferred =
@@ -42,6 +43,7 @@ class ReviewViewModel: ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
+        viewModelJob.cancel()
     }
 
 }
