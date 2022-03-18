@@ -3,46 +3,41 @@ package com.example.sarada.moviereviews.adapters
 import android.content.Context
 import com.example.sarada.moviereviews.models.datac.Trailer
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sarada.moviereviews.adapters.TrailerAdapter.MyViewHolder
+import com.example.sarada.moviereviews.adapters.TrailerAdapter.TrailerViewHolder
 import android.view.ViewGroup
 import android.view.LayoutInflater
-import com.example.sarada.moviereviews.R
-import android.widget.TextView
 import android.content.Intent
 import android.net.Uri
-import android.view.View
 import android.widget.Toast
+import com.example.sarada.moviereviews.databinding.TrailerCardBinding
 
 /**
  * Created by delaroy on 5/24/17.
  */
 class TrailerAdapter(private val mContext: Context, private val trailerList: List<Trailer>) :
-    RecyclerView.Adapter<MyViewHolder>() {
+    RecyclerView.Adapter<TrailerViewHolder>() {
 
-    //private lateinit var binding: TrailerCardBinding
-
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MyViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.trailer_card, viewGroup, false)
-        return MyViewHolder(view)
+    override fun onCreateViewHolder(
+        viewGroup: ViewGroup,
+        i: Int
+    ): TrailerViewHolder {
+        val layoutInflater = LayoutInflater.from(viewGroup.context)
+        val binding = TrailerCardBinding.inflate(layoutInflater, viewGroup, false)
+        return TrailerViewHolder(binding)
     }
 
-    override fun onBindViewHolder(viewHolder: MyViewHolder, i: Int) {
-        viewHolder.title.text = trailerList[i].name
+    override fun onBindViewHolder(viewHolder: TrailerViewHolder, i: Int) {
+        viewHolder.binding.title.text = trailerList[i].name
     }
 
     override fun getItemCount(): Int {
         return trailerList.size
     }
 
-    inner class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var title: TextView
-        //var thumbnail: ImageView
+    inner class TrailerViewHolder(val binding: TrailerCardBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            title = view.findViewById<View>(R.id.title) as TextView
-            //thumbnail = view.findViewById<View>(R.id.mainActivity_image) as ImageView
-            view.setOnClickListener { v ->
+            binding.root.setOnClickListener { v ->
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
                     val clickedDataItem = trailerList[pos]
