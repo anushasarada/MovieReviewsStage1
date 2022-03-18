@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="movieDetails"
+            type="com.example.sarada.moviereviews.models.datac.MovieDetails" />
     </data>
 
     <LinearLayout

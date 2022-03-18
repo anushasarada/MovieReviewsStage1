@@ -1,19 +1,27 @@
 package com.example.sarada.moviereviews.viewmodels
 
+import android.annotation.SuppressLint
+import android.os.AsyncTask
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
+import com.example.sarada.moviereviews.activities.MainActivity
+import com.example.sarada.moviereviews.database.FavoriteContract
 import com.example.sarada.moviereviews.models.datac.MovieApiResponse
+import com.example.sarada.moviereviews.models.datac.MovieDetails
 import kotlinx.coroutines.*
+import java.lang.ref.WeakReference
 
 class MainViewModel: ViewModel() {
 
     private var TOP_RATED_MOVIES: String = "Top Rated Movies"
     private var MOST_POPULAR_MOVIES: String = "Most Popular Movies"
+    private var FAVORITE_MOVIES: String = "Favorite Movies"
 
     private val _movies = MutableLiveData<MovieApiResponse>()
     val movies: LiveData<MovieApiResponse>
@@ -37,6 +45,7 @@ class MainViewModel: ViewModel() {
             val getMoviesDeferred = when (key) {
                 TOP_RATED_MOVIES -> MoviesApi.retrofitService.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
                 MOST_POPULAR_MOVIES -> MoviesApi.retrofitService.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                //FAVORITE_MOVIES -> allFavorites
                 else -> null
             }
 
@@ -58,4 +67,5 @@ class MainViewModel: ViewModel() {
         super.onCleared()
         viewModelJob.cancel()
     }
+
 }

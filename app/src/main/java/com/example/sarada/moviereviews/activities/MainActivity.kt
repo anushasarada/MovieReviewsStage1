@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
             itemAnimator = DefaultItemAnimator()
             adapter = movieAdapter
         }
-        movieAdapter!!.notifyDataSetChanged()
 
         if(showFavorites)
             allFavorites
@@ -101,8 +100,8 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 loadJSON(resources.getString(R.string.most_popular_movies))
             }
             this.getString(R.string.favorite) -> {
-                this@MainActivity.title = "Favorite Movies"
-                initViews(LOAD_FAVORITES)
+                this@MainActivity.title = resources.getString(R.string.favorite)
+                loadJSON(resources.getString(R.string.favorite))
             }
             else -> {
                 this@MainActivity.title = resources.getString(R.string.top_rated_movies)
@@ -139,13 +138,14 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                             binding.apply {
                                 includedLayout.apply{
                                     moviesRecyclerView.apply {
-                                        adapter = MovieAdapter(applicationContext, newMovies.results)
+                                        movieAdapter?.submitList(newMovies.results)
                                         smoothScrollToPosition(0)
                                         visibility = View.VISIBLE
                                     }
                                     check.visibility = View.GONE
                                 }
-                                swipeRefreshLayout.isRefreshing = !swipeRefreshLayout.isRefreshing
+                                if (swipeRefreshLayout.isRefreshing)
+                                    swipeRefreshLayout.isRefreshing = false
                             }
                         }
                     }
