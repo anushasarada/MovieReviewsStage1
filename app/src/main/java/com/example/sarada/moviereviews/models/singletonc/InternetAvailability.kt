@@ -17,5 +17,4 @@ object InternetAvailability {
             false
         }
     }
-
 }

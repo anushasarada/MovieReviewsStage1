@@ -30,6 +30,7 @@ import com.example.sarada.moviereviews.databinding.ActivityMainBinding
 import com.example.sarada.moviereviews.models.datac.MovieDetails
 import com.example.sarada.moviereviews.models.sealedc.NetworkStatus
 import com.example.sarada.moviereviews.viewmodels.MainViewModel
+import com.google.android.material.snackbar.Snackbar
 import java.lang.ref.WeakReference
 
 private var LOAD_FAVORITES: Boolean = true
@@ -50,29 +51,35 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.lifecycleOwner = this
         binding.mainViewModel = viewModel
+
         initViews(false)
 
-        binding.swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            initViews(false)
-            Toast.makeText(this@MainActivity, "Movies Refreshed", Toast.LENGTH_SHORT).show()
+        binding.apply {
+            swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
+            swipeRefreshLayout.setOnRefreshListener {
+                initViews(false)
+                Snackbar.make(
+                    binding.root, "Movies Refreshed",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
         }
+
     }
 
     private fun initViews(showFavorites: Boolean) {
 
-        if (activity!!.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 2)
-        } else {
-            binding.includedLayout.recyclerView.layoutManager = GridLayoutManager(this, 4)
+        binding.includedLayout.moviesRecyclerView.layoutManager = when(activity!!.resources.configuration.orientation){
+            Configuration.ORIENTATION_PORTRAIT -> GridLayoutManager(this, 2)
+            else -> GridLayoutManager(this, 4)
         }
 
         movieList = ArrayList()
         movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
 
-        binding.apply {
-            includedLayout.recyclerView.itemAnimator = DefaultItemAnimator()
-            includedLayout.recyclerView.adapter = movieAdapter
+        binding.includedLayout.moviesRecyclerView.apply {
+            itemAnimator = DefaultItemAnimator()
+            adapter = movieAdapter
         }
         movieAdapter!!.notifyDataSetChanged()
 
@@ -129,20 +136,22 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                     NetworkStatus.Available -> {
                         viewModel.setTypeForMovies(key)
                         viewModel.movies.observe(this) { newMovies ->
-                            binding.includedLayout.recyclerView.adapter =
-                                MovieAdapter(applicationContext, newMovies.results)
-                            binding.includedLayout.recyclerView.smoothScrollToPosition(0)
-                            if (binding.swipeRefreshLayout.isRefreshing)
-                                binding.swipeRefreshLayout.isRefreshing = false
-                            binding.includedLayout.apply{
-                                recyclerView.visibility = View.VISIBLE
-                                check.visibility = View.GONE
+                            binding.apply {
+                                includedLayout.apply{
+                                    moviesRecyclerView.apply {
+                                        adapter = MovieAdapter(applicationContext, newMovies.results)
+                                        smoothScrollToPosition(0)
+                                        visibility = View.VISIBLE
+                                    }
+                                    check.visibility = View.GONE
+                                }
+                                swipeRefreshLayout.isRefreshing = !swipeRefreshLayout.isRefreshing
                             }
                         }
                     }
                     NetworkStatus.Unavailable -> {
                         binding.includedLayout.apply {
-                            recyclerView.visibility = View.GONE
+                            moviesRecyclerView.visibility = View.GONE
                             check.visibility = View.VISIBLE
                             check.text = "Please check your internet connection"
                         }

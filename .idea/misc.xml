@@ -4,11 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.4046296296296296" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.3088768115942029" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25225225225225223" />
         <entry key="app/src/main/res/layout/activity_movie_content_detail.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_movie_detail.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_review.xml" value="0.21822916666666667" />
-        <entry key="app/src/main/res/layout/recycler_activity.xml" value="0.3088768115942029" />
+        <entry key="app/src/main/res/layout/recycler_activity.xml" value="0.25225225225225223" />
         <entry key="app/src/main/res/layout/recyclerview_item_activity.xml" value="0.1308876811594203" />
         <entry key="app/src/main/res/layout/review_card.xml" value="0.31657608695652173" />
         <entry key="app/src/main/res/layout/trailer_card.xml" value="0.1308876811594203" />
