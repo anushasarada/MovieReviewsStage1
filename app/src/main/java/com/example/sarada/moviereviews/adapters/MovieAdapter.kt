@@ -9,17 +9,18 @@ import android.view.LayoutInflater
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import android.content.Intent
-import android.view.View
 import android.widget.ImageView
 import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.activities.MovieDetailActivity
+import com.example.sarada.moviereviews.databinding.MovieItemBinding
 
 class MovieAdapter(private val mContext: Context, private val movieList: List<MovieDetails>) :
     RecyclerView.Adapter<MovieViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item_activity, parent, false)
-        return MovieViewHolder(v)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = MovieItemBinding.inflate(layoutInflater, parent, false)
+        return MovieViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
@@ -27,18 +28,17 @@ class MovieAdapter(private val mContext: Context, private val movieList: List<Mo
         Glide.with(mContext)
             .load(poster)
             .apply(RequestOptions().placeholder(R.drawable.ic_launcher_foreground))
-            .into(holder.movieImage)
+            .into(holder.binding.moviePosterImage)
     }
 
     override fun getItemCount(): Int {
         return movieList.size
     }
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var movieImage: ImageView = itemView.findViewById(R.id.mainActivity_image)
+    inner class MovieViewHolder(val binding: MovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            itemView.setOnClickListener {
+            binding.root.setOnClickListener {
                 val pos = adapterPosition
                 if (pos != RecyclerView.NO_POSITION) {
                     val clickedDataItem = movieList[pos]

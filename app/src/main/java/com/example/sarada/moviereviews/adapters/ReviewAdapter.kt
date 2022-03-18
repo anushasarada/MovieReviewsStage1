@@ -9,26 +9,25 @@ import android.view.LayoutInflater
 import android.view.View
 import com.example.sarada.moviereviews.R
 import android.widget.TextView
+import com.example.sarada.moviereviews.databinding.ReviewCardBinding
 
 class ReviewAdapter(private val mContext: Context, private val reviewList: List<Review>) :
     RecyclerView.Adapter<MyReviewViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): MyReviewViewHolder {
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.review_card, viewGroup, false)
-        return MyReviewViewHolder(view)
+        val layoutInflater = LayoutInflater.from(viewGroup.context)
+        val binding = ReviewCardBinding.inflate(layoutInflater, viewGroup, false)
+        return MyReviewViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: MyReviewViewHolder, i: Int) {
-        viewHolder.author.text = reviewList[i].author
-        viewHolder.content.text = reviewList[i].content
+        viewHolder.binding.authorName.text = reviewList[i].author
+        viewHolder.binding.content.text = reviewList[i].content
     }
 
     override fun getItemCount(): Int {
         return reviewList.size
     }
 
-    inner class MyReviewViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var author: TextView = view.findViewById<View>(R.id.author_name) as TextView
-        var content: TextView = view.findViewById<View>(R.id.content) as TextView
-    }
+    inner class MyReviewViewHolder(val binding: ReviewCardBinding) : RecyclerView.ViewHolder(binding.root)
 }
