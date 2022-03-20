@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -27,6 +28,8 @@ class ReviewActivity : AppCompatActivity() {
     }
 
     var movieId = 0
+    val reviewAdapter = ReviewAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,25 +38,21 @@ class ReviewActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
         movieId = intent.extras!!.getInt("movieId")
+
         this@ReviewActivity.title = """
             Reviews of 
             ${intent.extras!!.getString("movieName")}
             """.trimIndent()
-        Toast.makeText(
-            this@ReviewActivity,
-            intent.extras!!.getString("movieName"),
-            Toast.LENGTH_SHORT
-        ).show()
+
         initViews()
     }
 
     private fun initViews() {
         val reviewList: List<Review> = ArrayList()
-        val reviewAdapter = ReviewAdapter(this, reviewList)
+
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
-        binding.recyclerView2.layoutManager = layoutManager1
-        binding.recyclerView2.adapter = reviewAdapter
-        reviewAdapter.notifyDataSetChanged()
+        binding.reviewsRecyclerView.layoutManager = layoutManager1
+        binding.reviewsRecyclerView.adapter = reviewAdapter
         loadJSON1()
     }
 
@@ -70,20 +69,18 @@ class ReviewActivity : AppCompatActivity() {
 
             viewModel.movieId.value = movieId
             viewModel.reviews.observe(this) { newReviews ->
-                if (newReviews.results == null) {
-                    Toast.makeText(
-                        this@ReviewActivity,
-                        "There are no reviews for this movie.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    binding.recyclerView2.adapter = newReviews?.let {
-                        ReviewAdapter(
-                            applicationContext,
-                            it.results!!
-                        )
+                if (newReviews.results != null && newReviews.results!!.isNotEmpty()) {
+                    reviewAdapter.submitList(newReviews.results)
+                    binding.apply {
+                        reviewsRecyclerView.smoothScrollToPosition(0)
+                        reviewsRecyclerView.visibility = View.VISIBLE
+                        noReviewsTextView.visibility = View.GONE
                     }
-                    binding.recyclerView2.smoothScrollToPosition(0)
+                }else{
+                    binding.apply {
+                        reviewsRecyclerView.visibility = View.GONE
+                        noReviewsTextView.visibility = View.VISIBLE
+                    }
                 }
             }
 

@@ -18,5 +18,6 @@
     <string name="trailer">Trailers:</string>
     <string name="top_rated_movies">Top Rated Movies</string>
     <string name="most_popular_movies">Most Popular Movies</string>
+    <string name="no_reviews_text">This movie doesn\'t have any reviews yet !</string>
 
 </resources>
