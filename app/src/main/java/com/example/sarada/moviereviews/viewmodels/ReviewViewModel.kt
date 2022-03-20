@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
-import com.example.sarada.moviereviews.models.datac.ReviewResponse
+import com.example.sarada.moviereviews.models.datac.responses.ReviewResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,7 +32,7 @@ class ReviewViewModel: ViewModel() {
 
         coroutineScope.launch {
             val getMoviesDeferred =
-                MoviesApi.retrofitService.getMovieReviews(movieId.value!!, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+                MoviesApi.RETROFIT_SERVICE.getMovieReviews(movieId.value!!, BuildConfig.THE_MOVIE_DB_API_TOKEN)
             try {
                 _reviews.value = getMoviesDeferred.await()
             } catch (t: Throwable) {

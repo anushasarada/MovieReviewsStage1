@@ -53,6 +53,9 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         binding.mainViewModel = viewModel
 
         initViews(false)
+    }
+
+    private fun initViews(showFavorites: Boolean) {
 
         binding.apply {
             swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_orange_dark)
@@ -65,17 +68,13 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
             }
         }
 
-    }
-
-    private fun initViews(showFavorites: Boolean) {
-
         binding.includedLayout.moviesRecyclerView.layoutManager = when(activity!!.resources.configuration.orientation){
             Configuration.ORIENTATION_PORTRAIT -> GridLayoutManager(this, 2)
             else -> GridLayoutManager(this, 4)
         }
 
         movieList = ArrayList()
-        movieAdapter = MovieAdapter(this, movieList as ArrayList<MovieDetails>)
+        movieAdapter = MovieAdapter(this)
 
         binding.includedLayout.moviesRecyclerView.apply {
             itemAnimator = DefaultItemAnimator()

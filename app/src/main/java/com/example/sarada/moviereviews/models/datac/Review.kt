@@ -3,7 +3,7 @@ package com.example.sarada.moviereviews.models.datac
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by sarada on 4/4/2018.

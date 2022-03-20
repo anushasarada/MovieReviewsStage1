@@ -15,8 +15,7 @@ import com.example.sarada.moviereviews.activities.MovieDetailActivity
 import com.example.sarada.moviereviews.databinding.MovieItemBinding
 
 class MovieAdapter(
-    private val mContext: Context,
-    moviesList: List<MovieDetails>
+    private val mContext: Context
 ) :
     ListAdapter<MovieDetails, MovieAdapter.MovieViewHolder>(MoviesDiffCallback()) {
 

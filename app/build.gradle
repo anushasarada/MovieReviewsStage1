@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 android {
     compileSdkVersion 32
@@ -25,14 +25,8 @@ android {
             buildConfigField("String", "THE_MOVIE_DB_API_TOKEN", MyTheMovieDBApiToken)
         }
     }
-    /*buildFeatures {
-        viewBinding true
-    }*/
     dataBinding{
         enabled = true
-    }
-    androidExtensions{
-        experimental = true
     }
 }
 
@@ -52,6 +46,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-appcompat-v7:0.10.1"
     implementation "androidx.preference:preference-ktx:1.2.0"
 
+    // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     // JSON Converter

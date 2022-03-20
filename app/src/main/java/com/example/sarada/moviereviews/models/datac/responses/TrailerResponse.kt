@@ -1,8 +1,9 @@
-package com.example.sarada.moviereviews.models.datac
+package com.example.sarada.moviereviews.models.datac.responses
 
 import android.os.Parcelable
+import com.example.sarada.moviereviews.models.datac.Trailer
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TrailerResponse(

@@ -5,11 +5,10 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.MoviesApi
 import com.example.sarada.moviereviews.database.FavoritesDatabaseDao
-import com.example.sarada.moviereviews.models.datac.TrailerResponse
+import com.example.sarada.moviereviews.models.datac.responses.TrailerResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,7 +36,7 @@ class MovieDetailViewModel(
     private fun getTrailers() {
 
         coroutineScope.launch {
-            val getUserDetailsDeferred = MoviesApi.retrofitService.getMovieTrailer(movieId.value!!, BuildConfig.THE_MOVIE_DB_API_TOKEN)
+            val getUserDetailsDeferred = MoviesApi.RETROFIT_SERVICE.getMovieTrailer(movieId.value!!, BuildConfig.THE_MOVIE_DB_API_TOKEN)
             try {
                 _trailer.value = getUserDetailsDeferred.await()
             } catch (t: Throwable) {
