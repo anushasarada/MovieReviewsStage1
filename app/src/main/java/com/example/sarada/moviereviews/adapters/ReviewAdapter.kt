@@ -1,6 +1,5 @@
 package com.example.sarada.moviereviews.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -25,8 +24,8 @@ class ReviewAdapter: ListAdapter<Review, MyReviewViewHolder>(ReviewDiffCallback(
         fun bind(
             item: Review
         ) {
-            binding.authorName.text = item.author
-            binding.content.text = item.content
+            binding.review = item
+            binding.executePendingBindings()
         }
 
         companion object {

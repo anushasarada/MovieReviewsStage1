@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:content="com.delaroystudios.movieapp.DetailActivity">
 
+    <data>
+        <variable
+            name="movieDetails"
+            type="com.example.sarada.moviereviews.models.datac.MovieDetails" />
+    </data>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -27,7 +33,7 @@
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="2"
-                android:text="@string/movie_name"
+                android:text="@{movieDetails.originalTitle}"
                 tools:text="@string/movie_name"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
@@ -57,6 +63,7 @@
                 android:padding="@dimen/padding_layout"
                 android:text="@string/release_date"
                 android:textSize="28sp"
+                movieReleaseDateText="@{movieDetails}"
                 app:layout_constraintTop_toBottomOf="@id/movie_title"
                 app:layout_constraintBottom_toTopOf="@id/user_rating"
                 app:layout_constraintStart_toEndOf="@id/thumbnail_image_header"
@@ -71,6 +78,7 @@
                 android:text="@string/rating"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                movieRatingText="@{movieDetails}"
                 app:layout_constraintTop_toBottomOf="@id/release_date"
                 app:layout_constraintBottom_toTopOf="@id/favorite_button"
                 app:layout_constraintStart_toEndOf="@id/thumbnail_image_header"
@@ -92,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_margin_top"
                 android:padding="@dimen/padding_layout"
-                android:text="@string/plot_synopsis"
+                android:text="@{movieDetails.overview}"
                 android:textSize="17sp"
                 app:layout_constraintTop_toBottomOf="@id/thumbnail_image_header" />
 

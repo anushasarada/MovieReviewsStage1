@@ -6,6 +6,9 @@
 
     <data>
         <variable
+            name="movieDetails"
+            type="com.example.sarada.moviereviews.models.datac.MovieDetails" />
+        <variable
             name="movieDetailViewModel"
             type="com.example.sarada.moviereviews.viewmodels.MovieDetailViewModel" />
     </data>

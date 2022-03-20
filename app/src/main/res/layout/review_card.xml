@@ -4,7 +4,9 @@
     xmlns:card_view="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="review"
+            type="com.example.sarada.moviereviews.models.datac.Review" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -26,7 +28,8 @@
                 android:id="@+id/author_name"
                 android:text="@string/author"
                 android:textStyle="bold"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                reviewAuthorText="@{review}"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -34,7 +37,8 @@
                 android:id="@+id/content"
                 android:text="@string/content"
                 android:textSize="18sp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                reviewContentText="@{review}"/>
 
         </LinearLayout>
 

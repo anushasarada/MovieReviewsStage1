@@ -71,35 +71,24 @@ class MovieDetailActivity : AppCompatActivity() {
         initCollapsingToolbar()
 
         if (intent.hasExtra("movies")) {
+
             movieDetails = intent.getParcelableExtra("movies")
+
             thumbnail = movieDetails!!.posterPath
             movieName = movieDetails!!.originalTitle
             synopsis = movieDetails!!.overview
             rate = java.lang.Double.toString(movieDetails!!.voteAverage!!)
-            val rating = "$rate/10"
             movieId = movieDetails!!.id!!
             dateFromDB = movieDetails!!.releaseDate
-            val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-            var yourDate: Date? = null
-            try {
-                yourDate = parser.parse(dateFromDB)
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
-            val calendar = Calendar.getInstance()
-            calendar.time = yourDate
-            val dateOfRelease = calendar[Calendar.YEAR].toString()
+
             val poster = "https://image.tmdb.org/t/p/w500$thumbnail"
             Glide.with(this)
                 .load(poster)
                 .apply(RequestOptions().placeholder(R.drawable.ic_launcher_foreground))
                 .into(binding.movieContentDetailActivity.thumbnailImageHeader)
-            binding.movieContentDetailActivity.apply {
-                movieTitle.text = movieName
-                plotSynopsis.text = synopsis
-                userRating.text = rating
-                releaseDate.text = dateOfRelease
-            }
+
+            binding.movieContentDetailActivity.movieDetails = movieDetails
+            binding.executePendingBindings()
 
         } else {
             Toast.makeText(this, "No API data", Toast.LENGTH_SHORT).show()
