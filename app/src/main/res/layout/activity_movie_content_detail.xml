@@ -97,7 +97,7 @@
                 app:layout_constraintTop_toBottomOf="@id/thumbnail_image_header" />
 
             <TextView
-                android:id="@+id/trailer_text"
+                android:id="@+id/trailers_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_margin_top"
@@ -109,13 +109,24 @@
                 app:layout_constraintTop_toBottomOf="@id/plot_synopsis" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/trailer_recycler_view"
+                android:id="@+id/trailers_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 tools:listitem="@layout/movie_item"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/trailer_text" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trailers_header" />
+
+            <TextView
+                android:id="@+id/no_trailers_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_trailers_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/plot_synopsis"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

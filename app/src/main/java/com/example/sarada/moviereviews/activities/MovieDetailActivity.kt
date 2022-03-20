@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -48,6 +49,7 @@ class MovieDetailActivity : AppCompatActivity() {
     private var rate: String? = null
     private var dateFromDB: String? = null
     var movieDetails: MovieDetails? = null
+    val trailerAdapter = TrailerAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -196,13 +198,12 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun initViews() {
         val trailerList: List<Trailer> = ArrayList()
-        val adapter = TrailerAdapter(this, trailerList)
+
         val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
         binding.movieContentDetailActivity.apply{
-            trailerRecyclerView.layoutManager = mLayoutManager
-            trailerRecyclerView.adapter = adapter
+            trailersRecyclerView.layoutManager = mLayoutManager
+            trailersRecyclerView.adapter = trailerAdapter
         }
-        adapter.notifyDataSetChanged()
         loadJSON()
     }
 
@@ -218,22 +219,20 @@ class MovieDetailActivity : AppCompatActivity() {
             }
 
             viewModel.movieId.value = movieId
-            viewModel.trailer.observe(this) { newTrailer ->
-                if (newTrailer.results == null) {
-                    Toast.makeText(
-                        this@MovieDetailActivity,
-                        "There are no trailers for this movie.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
+            viewModel.trailer.observe(this) { newTrailers ->
+                if (newTrailers.results != null && newTrailers.results!!.isNotEmpty()) {
+                    trailerAdapter.submitList(newTrailers.results)
                     binding.movieContentDetailActivity.apply {
-                        trailerRecyclerView.adapter = newTrailer?.let {
-                            TrailerAdapter(
-                                applicationContext,
-                                it.results!!
-                            )
-                        }
-                        trailerRecyclerView.smoothScrollToPosition(0)
+                        trailersRecyclerView.smoothScrollToPosition(0)
+                        trailersHeader.visibility = View.VISIBLE
+                        trailersRecyclerView.visibility = View.VISIBLE
+                        noTrailersTextView.visibility = View.GONE
+                    }
+                }else{
+                    binding.movieContentDetailActivity.apply {
+                        trailersHeader.visibility = View.GONE
+                        trailersRecyclerView.visibility = View.GONE
+                        noTrailersTextView.visibility = View.VISIBLE
                     }
                 }
             }
