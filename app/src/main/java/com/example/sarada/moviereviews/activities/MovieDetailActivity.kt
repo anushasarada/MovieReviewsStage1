@@ -209,7 +209,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
             viewModel.movieId.value = movieId
             viewModel.trailer.observe(this) { newTrailers ->
-                if (newTrailers.results != null && newTrailers.results!!.isNotEmpty()) {
+                if (newTrailers.results != null && newTrailers.results.isNotEmpty()) {
                     trailerAdapter.submitList(newTrailers.results)
                     binding.movieContentDetailActivity.apply {
                         trailersRecyclerView.smoothScrollToPosition(0)

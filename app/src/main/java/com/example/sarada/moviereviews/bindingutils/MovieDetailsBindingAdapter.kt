@@ -3,7 +3,6 @@ package com.example.sarada.moviereviews.bindingutils
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.example.sarada.moviereviews.models.datac.MovieDetails
-import com.example.sarada.moviereviews.models.datac.Review
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*

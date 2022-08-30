@@ -6,8 +6,4 @@ class MainActivityLifeCycleObserver(lifecycle: Lifecycle) : DefaultLifecycleObse
     init {
         lifecycle.addObserver(this)
     }
-    override fun onCreate(owner: LifecycleOwner) {
-        super.onCreate(owner)
-        // your code
-    }
 }

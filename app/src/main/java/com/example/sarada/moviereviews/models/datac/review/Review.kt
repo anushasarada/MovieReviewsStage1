@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews.models.datac
+package com.example.sarada.moviereviews.models.datac.review
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -11,5 +11,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Review(
     var author: String,
-    var content: String
+    var content: String,
+    @Json(name = "author_details") var authorDetails: AuthorDetails
 ):Parcelable

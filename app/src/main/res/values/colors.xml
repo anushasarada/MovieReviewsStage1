@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorGrey">#789779</color>
     <color name="text_shadow">#7F000000</color>
+    <color name="rating_star_gold">#ffff8800</color>
 </resources>

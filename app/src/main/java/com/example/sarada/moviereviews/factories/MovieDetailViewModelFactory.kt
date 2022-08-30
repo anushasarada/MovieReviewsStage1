@@ -11,7 +11,7 @@ class MovieDetailViewModelFactory(
     private val dataSource: FavoritesDatabaseDao,
     private val application: Application
 ): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(MovieDetailViewModel::class.java)){
             return MovieDetailViewModel(dataSource, application) as T
         }

@@ -2,7 +2,7 @@ package com.example.sarada.moviereviews.bindingutils
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.example.sarada.moviereviews.models.datac.Review
+import com.example.sarada.moviereviews.models.datac.review.Review
 
 @BindingAdapter("reviewAuthorText")
 fun TextView.setReviewAuthorString(item: Review?) {

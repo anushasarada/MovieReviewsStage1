@@ -16,7 +16,7 @@ import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
 import com.example.sarada.moviereviews.adapters.ReviewAdapter
 import com.example.sarada.moviereviews.databinding.ActivityReviewBinding
-import com.example.sarada.moviereviews.models.datac.Review
+import com.example.sarada.moviereviews.models.datac.review.Review
 import com.example.sarada.moviereviews.viewmodels.ReviewViewModel
 
 class ReviewActivity : AppCompatActivity() {
@@ -28,7 +28,7 @@ class ReviewActivity : AppCompatActivity() {
     }
 
     var movieId = 0
-    val reviewAdapter = ReviewAdapter()
+    val reviewAdapter = ReviewAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

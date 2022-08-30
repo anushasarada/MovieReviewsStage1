@@ -1,7 +1,7 @@
 package com.example.sarada.moviereviews.models.datac.responses
 
 import android.os.Parcelable
-import com.example.sarada.moviereviews.models.datac.Review
+import com.example.sarada.moviereviews.models.datac.review.Review
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
 
