@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.sarada.moviereviews.activities.MovieDetailActivity">
+    tools:context=".presentation.views.activities.MovieDetailActivity">
 
     <data>
         <variable
@@ -10,7 +10,7 @@
             type="com.example.sarada.moviereviews.models.datac.MovieDetails" />
         <variable
             name="movieDetailViewModel"
-            type="com.example.sarada.moviereviews.viewmodels.MovieDetailViewModel" />
+            type="com.example.sarada.moviereviews.presentation.viewmodels.MovieDetailViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

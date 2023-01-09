@@ -31,6 +31,7 @@ android {
     dataBinding{
         enabled = true
     }
+    namespace 'com.example.sarada.moviereviews'
 }
 
 dependencies {
@@ -54,14 +55,14 @@ dependencies {
     // JSON Converter
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 
-    // ViewModel | Lifecycle
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-
     implementation 'com.squareup.moshi:moshi:1.8.0'
     implementation 'com.squareup.moshi:moshi-kotlin:1.8.0' //@Json
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+
+    // ViewModel | Lifecycle
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
@@ -107,6 +108,13 @@ dependencies {
     //Google Truth Library
     testImplementation "com.google.truth:truth:1.1.3"
     androidTestImplementation "com.google.truth:truth:1.1.3"
+
+    //dagger
+    implementation "com.google.dagger:dagger-android:2.35.1"
+    implementation "com.google.dagger:dagger-android-support:2.35.1"
+    annotationProcessor "com.google.dagger:dagger-android-processor:2.35.1"
+
+    annotationProcessor "com.google.dagger:dagger-compiler:2.35.1"
 }
 repositories {
     mavenCentral()

@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews
+package com.example.sarada.moviereviews.network
 
 import retrofit2.Retrofit
 import com.google.gson.GsonBuilder

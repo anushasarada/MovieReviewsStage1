@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews.adapters
+package com.example.sarada.moviereviews.presentation.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.adapters.ReviewAdapter.MyReviewViewHolder
+import com.example.sarada.moviereviews.presentation.adapters.ReviewAdapter.MyReviewViewHolder
 import com.example.sarada.moviereviews.databinding.ReviewCardBinding
 import com.example.sarada.moviereviews.models.datac.review.Review
 

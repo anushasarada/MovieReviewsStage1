@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews.adapters
+package com.example.sarada.moviereviews.presentation.adapters
 
 import android.content.Context
 import com.example.sarada.moviereviews.models.datac.MovieDetails
@@ -11,7 +11,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.activities.MovieDetailActivity
+import com.example.sarada.moviereviews.presentation.views.activities.MovieDetailActivity
 import com.example.sarada.moviereviews.databinding.MovieItemBinding
 
 class MovieAdapter(
@@ -42,7 +42,7 @@ class MovieAdapter(
             item: MovieDetails
         ) {
 
-        val poster = "https://image.tmdb.org/t/p/w500" + item.posterPath
+            val poster = "https://image.tmdb.org/t/p/w500" + item.posterPath
             Glide.with(mContext)
                 .load(poster)
                 .apply(RequestOptions().placeholder(R.drawable.ic_launcher_foreground))

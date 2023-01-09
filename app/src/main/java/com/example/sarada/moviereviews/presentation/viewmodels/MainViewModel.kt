@@ -1,11 +1,12 @@
-package com.example.sarada.moviereviews.viewmodels
+package com.example.sarada.moviereviews.presentation.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.sarada.moviereviews.BuildConfig
-import com.example.sarada.moviereviews.MoviesApi
+import com.example.sarada.moviereviews.network.MoviesApi
 import com.example.sarada.moviereviews.models.datac.responses.MoviesResponse
 import kotlinx.coroutines.*
 
@@ -21,9 +22,6 @@ class MainViewModel: ViewModel() {
 
     lateinit var key: String
 
-    private val viewModelJob = Job()
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
     init {
         key = TOP_RATED_MOVIES
         getMovies()
@@ -32,7 +30,7 @@ class MainViewModel: ViewModel() {
 
     private fun getMovies() {
 
-        coroutineScope.launch {
+        viewModelScope.launch {
 
             val getMoviesDeferred = when (key) {
                 TOP_RATED_MOVIES -> MoviesApi.RETROFIT_SERVICE.getTopRatedMovies(BuildConfig.THE_MOVIE_DB_API_TOKEN)
@@ -53,11 +51,6 @@ class MainViewModel: ViewModel() {
 
     fun setTypeForMovies(key: String) {
         this.key = key
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
     }
 
 }

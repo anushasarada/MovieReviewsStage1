@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews.activities
+package com.example.sarada.moviereviews.presentation.views.activities
 
 import NetworkStatusHelper
 import android.annotation.SuppressLint
@@ -24,12 +24,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.adapters.MovieAdapter
+import com.example.sarada.moviereviews.presentation.adapters.MovieAdapter
 import com.example.sarada.moviereviews.database.FavoriteContract
 import com.example.sarada.moviereviews.databinding.ActivityMainBinding
 import com.example.sarada.moviereviews.models.datac.MovieDetails
 import com.example.sarada.moviereviews.models.sealedc.NetworkStatus
-import com.example.sarada.moviereviews.viewmodels.MainViewModel
+import com.example.sarada.moviereviews.presentation.viewmodels.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.lang.ref.WeakReference
 
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
+        ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     private var movieList: MutableList<MovieDetails>? = null

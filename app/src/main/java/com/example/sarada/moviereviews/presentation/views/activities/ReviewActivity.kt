@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews.activities
+package com.example.sarada.moviereviews.presentation.views.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -14,10 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.adapters.ReviewAdapter
+import com.example.sarada.moviereviews.presentation.adapters.ReviewAdapter
 import com.example.sarada.moviereviews.databinding.ActivityReviewBinding
 import com.example.sarada.moviereviews.models.datac.review.Review
-import com.example.sarada.moviereviews.viewmodels.ReviewViewModel
+import com.example.sarada.moviereviews.presentation.viewmodels.ReviewViewModel
 
 class ReviewActivity : AppCompatActivity() {
 

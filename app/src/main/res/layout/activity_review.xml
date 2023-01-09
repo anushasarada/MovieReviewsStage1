@@ -2,11 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.sarada.moviereviews.activities.ReviewActivity">
+    tools:context=".presentation.views.activities.ReviewActivity">
     <data>
         <variable
             name="viewModel"
-            type="com.example.sarada.moviereviews.viewmodels.ReviewViewModel" />
+            type="com.example.sarada.moviereviews.presentation.viewmodels.ReviewViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

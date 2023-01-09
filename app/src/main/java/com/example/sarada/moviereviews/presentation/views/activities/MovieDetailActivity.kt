@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews.activities
+package com.example.sarada.moviereviews.presentation.views.activities
 
 import android.content.ContentValues
 import android.content.Intent
@@ -17,21 +17,19 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sarada.moviereviews.BuildConfig
 import com.example.sarada.moviereviews.R
-import com.example.sarada.moviereviews.adapters.TrailerAdapter
+import com.example.sarada.moviereviews.presentation.adapters.TrailerAdapter
 import com.example.sarada.moviereviews.database.FavoriteContract
 import com.example.sarada.moviereviews.database.FavoritesDatabase
 import com.example.sarada.moviereviews.databinding.ActivityMovieDetailBinding
 import com.example.sarada.moviereviews.factories.MovieDetailViewModelFactory
 import com.example.sarada.moviereviews.models.datac.MovieDetails
 import com.example.sarada.moviereviews.models.datac.Trailer
-import com.example.sarada.moviereviews.viewmodels.MovieDetailViewModel
+import com.example.sarada.moviereviews.presentation.viewmodels.MovieDetailViewModel
 import com.github.ivbaranov.mfb.MaterialFavoriteButton
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.snackbar.Snackbar
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MovieDetailActivity : AppCompatActivity() {

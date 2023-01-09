@@ -1,9 +1,9 @@
-package com.example.sarada.moviereviews.adapters
+package com.example.sarada.moviereviews.presentation.adapters
 
 import android.content.Context
 import com.example.sarada.moviereviews.models.datac.Trailer
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sarada.moviereviews.adapters.TrailerAdapter.TrailerViewHolder
+import com.example.sarada.moviereviews.presentation.adapters.TrailerAdapter.TrailerViewHolder
 import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.content.Intent

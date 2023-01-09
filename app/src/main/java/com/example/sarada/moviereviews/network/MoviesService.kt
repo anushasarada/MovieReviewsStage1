@@ -1,4 +1,4 @@
-package com.example.sarada.moviereviews
+package com.example.sarada.moviereviews.network
 
 import retrofit2.http.GET
 import com.example.sarada.moviereviews.models.datac.responses.MoviesResponse

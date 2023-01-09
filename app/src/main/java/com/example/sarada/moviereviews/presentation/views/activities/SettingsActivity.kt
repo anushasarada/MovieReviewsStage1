@@ -1,8 +1,6 @@
-package com.example.sarada.moviereviews.activities
+package com.example.sarada.moviereviews.presentation.views.activities
 
-import android.preference.PreferenceActivity
 import android.os.Bundle
-import android.preference.PreferenceFragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceFragmentCompat
 import com.example.sarada.moviereviews.R

@@ -1,11 +1,11 @@
-package com.example.sarada.moviereviews.viewmodels
+package com.example.sarada.moviereviews.presentation.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sarada.moviereviews.BuildConfig
-import com.example.sarada.moviereviews.MoviesApi
+import com.example.sarada.moviereviews.network.MoviesApi
 import com.example.sarada.moviereviews.models.datac.responses.ReviewResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
