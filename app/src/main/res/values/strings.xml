@@ -20,5 +20,5 @@
     <string name="most_popular_movies">Most Popular Movies</string>
     <string name="no_reviews_text">This movie doesn\'t have any reviews yet !</string>
     <string name="no_trailers_text">Oops !\nThere are no trailers for this movie!</string>
-
+    <string name="check_internet_connection">Please check your internet connection</string>
 </resources>

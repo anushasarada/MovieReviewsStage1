@@ -30,6 +30,8 @@ import com.example.sarada.moviereviews.databinding.ActivityMainBinding
 import com.example.sarada.moviereviews.models.datac.MovieDetails
 import com.example.sarada.moviereviews.models.sealedc.NetworkStatus
 import com.example.sarada.moviereviews.presentation.viewmodels.MainViewModel
+import com.example.sarada.moviereviews.utils.Constants.Companion.FAVORITE_MOVIES
+import com.example.sarada.moviereviews.utils.Constants.Companion.MOST_POPULAR
 import com.google.android.material.snackbar.Snackbar
 import java.lang.ref.WeakReference
 
@@ -53,6 +55,11 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         binding.mainViewModel = viewModel
 
         initViews(false)
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        if (movieList!!.isEmpty()) checkSortOrder() else checkSortOrder()
     }
 
     private fun initViews(showFavorites: Boolean) {
@@ -91,14 +98,14 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val sortOrder = preferences.getString(
             this.getString(R.string.pref_sort_order_key),
-            this.getString(R.string.pref_most_popular)
+            MOST_POPULAR
         )
         when (sortOrder) {
-            this.getString(R.string.pref_most_popular) -> {
+            MOST_POPULAR -> {
                 this@MainActivity.title = resources.getString(R.string.most_popular_movies)
                 loadJSON(resources.getString(R.string.most_popular_movies))
             }
-            this.getString(R.string.favorite) -> {
+            FAVORITE_MOVIES -> {
                 this@MainActivity.title = resources.getString(R.string.favorite)
                 loadJSON(resources.getString(R.string.favorite))
             }
@@ -133,33 +140,41 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
                 when (it) {
                     NetworkStatus.Available -> {
                         viewModel.setTypeForMovies(key)
-                        viewModel.movies.observe(this) { newMovies ->
-                            binding.apply {
-                                includedLayout.apply{
-                                    moviesRecyclerView.apply {
-                                        movieAdapter?.submitList(newMovies.results)
-                                        smoothScrollToPosition(0)
-                                        visibility = View.VISIBLE
-                                    }
-                                    check.visibility = View.GONE
-                                }
-                                if (swipeRefreshLayout.isRefreshing)
-                                    swipeRefreshLayout.isRefreshing = false
-                            }
-                        }
+                        observeMovies()
                     }
                     NetworkStatus.Unavailable -> {
-                        binding.includedLayout.apply {
-                            moviesRecyclerView.visibility = View.GONE
-                            check.visibility = View.VISIBLE
-                            check.text = "Please check your internet connection"
-                        }
+                        showInternetLayout()
                     }
                 }
             }
         } catch (e: Exception) {
             Log.d("Error", e.message!!)
             Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showInternetLayout() {
+        binding.includedLayout.apply {
+            moviesRecyclerView.visibility = View.GONE
+            tvNoInternet.visibility = View.VISIBLE
+            tvNoInternet.text = resources.getString(R.string.check_internet_connection)
+        }
+    }
+
+    private fun observeMovies() {
+        viewModel.movies.observe(this) { newMovies ->
+            binding.apply {
+                includedLayout.apply{
+                    moviesRecyclerView.apply {
+                        movieAdapter?.submitList(newMovies.results)
+                        smoothScrollToPosition(0)
+                        visibility = View.VISIBLE
+                    }
+                    tvNoInternet.visibility = View.GONE
+                }
+                if (swipeRefreshLayout.isRefreshing)
+                    swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 
@@ -181,11 +196,6 @@ class MainActivity : AppCompatActivity(), OnSharedPreferenceChangeListener {
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, s: String) {
         checkSortOrder()
-    }
-
-    public override fun onResume() {
-        super.onResume()
-        if (movieList!!.isEmpty()) checkSortOrder() else checkSortOrder()
     }
 
     private val allFavorites: Unit

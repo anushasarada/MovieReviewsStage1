@@ -24,14 +24,14 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/internet_movie"
         tools:text="@string/internet_movie"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:id="@+id/check"
+        android:id="@+id/tv_no_internet"
         android:gravity="center"
         android:visibility="gone"
         tools:visibility="visible"
